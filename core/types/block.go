@@ -15,10 +15,10 @@ import (
 
 // MaxBlockHeaderPayload is the maximum number of bytes a block header can be.
 // Version 4 bytes + ParentRoot 32 bytes + TxRoot 32 bytes + StateRoot 32 bytes
-// Difficulty 4 bytes   + Timestamp 8 bytes + Nonce 8 bytes +ExNonce 8 bytes
-// --> Total 128 bytes.
-const CyclePayload  = cuckoo.ProofSize * 4
-const MaxBlockHeaderPayload = 4 + (hash.HashSize * 3) + 4 + 8 + 8 +8 + CyclePayload
+// Difficulty 4 bytes   + Timestamp 8 bytes + Nonce 8 bytes +ExNonce 8 bytes + circle nonces 80
+// --> Total 208 bytes.
+const CirclePayload  = cuckoo.ProofSize * 4
+const MaxBlockHeaderPayload = 4 + (hash.HashSize * 3) + 4 + 8 + 8 +8 + CirclePayload
 
 // MaxBlockPayload is the maximum bytes a block message can be in bytes.
 const MaxBlockPayload = 1048576 // 1024*1024 (1MB)
@@ -32,7 +32,7 @@ const MaxParentsPerBlock=50
 
 // blockHeaderLen is a constant that represents the number of bytes for a block
 // header.
-const blockHeaderLen = 180 + CyclePayload
+const blockHeaderLen = 180 + CirclePayload
 
 // MaxBlocksPerMsg is the maximum number of blocks allowed per message.
 const MaxBlocksPerMsg = 500
@@ -110,7 +110,7 @@ func (h *BlockHeader) BlockHashWithoutCircle() hash.Hash {
 	// transactions.  Ignore the error returns since there is no way the
 	// encode could fail except being out of memory which would cause a
 	// run-time panic.
-	buf := bytes.NewBuffer(make([]byte, 0, MaxBlockHeaderPayload-CyclePayload))
+	buf := bytes.NewBuffer(make([]byte, 0, MaxBlockHeaderPayload-CirclePayload))
 	// TODO, redefine the protocol version and storage
 	_ = writeBlockHeaderWithoutCircle(buf,0, h)
 	// TODO, add an abstract layer of hash func
