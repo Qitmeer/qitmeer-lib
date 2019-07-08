@@ -2,6 +2,7 @@
 package serialization
 
 import (
+	"github.com/HalalChain/qitmeer-lib/crypto/cuckoo"
 	"io"
 	"github.com/HalalChain/qitmeer-lib/core/protocol"
 	"encoding/binary"
@@ -152,6 +153,19 @@ func readElement(r io.Reader, element interface{}) error {
 		*e = protocol.Network(rv)
 		return nil
 
+	case *[cuckoo.ProofSize]uint32:
+		//var cuckoocycles [cuckoocycle.ProofSize]uint32
+		var cuckoocycles [cuckoo.ProofSize]uint32
+		for i := 0; i < cuckoo.ProofSize; i++ {
+			rv, err := BinarySerializer.Uint32(r, binary.LittleEndian)
+			cuckoocycles[i] = rv
+			if err != nil {
+				return err
+			}
+		}
+		*e = cuckoocycles
+		return nil
+
 	}
 
 	// Fall back to the slower binary.Read if a fast path was not available
@@ -243,6 +257,14 @@ func writeElement(w io.Writer, element interface{}) error {
 		err := BinarySerializer.PutUint32(w, littleEndian, uint32(e))
 		if err != nil {
 			return err
+		}
+		return nil
+	case [cuckoo.ProofSize]uint32:
+		for i := 0; i < cuckoo.ProofSize; i++ {
+			err := BinarySerializer.PutUint32(w, littleEndian, e[i])
+			if err != nil {
+				return err
+			}
 		}
 		return nil
 	}
