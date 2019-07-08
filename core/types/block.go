@@ -104,7 +104,7 @@ func (h *BlockHeader) BlockHash() hash.Hash {
 	return hash.DoubleHashH(buf.Bytes())
 }
 
-// // opposed to computes cuckoo sip hash key
+// the purpose is computing the cuckoo sip hash key
 func (h *BlockHeader) BlockHashWithoutCircle() hash.Hash {
 	// Encode the header and hash256 everything prior to the number of
 	// transactions.  Ignore the error returns since there is no way the
@@ -140,7 +140,7 @@ func writeBlockHeader(w io.Writer, pver uint32, bh *BlockHeader) error {
 		&bh.StateRoot, bh.Difficulty,bh.ExNonce, sec, bh.Nonce,bh.CircleNonces)
 }
 
-// opposed to encoding for block hash with out circle.
+// the purpose is encoding for block hash with out circle nonces.
 func writeBlockHeaderWithoutCircle(w io.Writer, pver uint32, bh *BlockHeader) error {
 	sec := bh.Timestamp.Unix()
 	return s.WriteElements(w, bh.Version, &bh.ParentRoot, &bh.TxRoot,
