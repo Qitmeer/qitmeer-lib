@@ -54,7 +54,9 @@ type GetBlockTemplateResultAux struct {
 type GetBlockTemplateResult struct {
 	// Base fields from BIP 0022.  CoinbaseAux is optional.  One of
 	// CoinbaseTxn or CoinbaseValue must be specified, but not both.
-	Bits          string                     `json:"bits"`
+	Blake2bDBits          string                     `json:"blake2bd_bits"`
+	CuckarooBits          string                     `json:"cuckaroo_bits"`
+	CuckatooBits          string                     `json:"cuckatoo_bits"`
 	StateRoot     string                     `json:"stateroot"`
 	CurTime       int64                      `json:"curtime"`
 	Height        int64                      `json:"height"`
@@ -79,8 +81,10 @@ type GetBlockTemplateResult struct {
 	SubmitOld   *bool  `json:"submitold,omitempty"`
 
 	// Basic pool extension from BIP 0023.
-	Target  string `json:"target,omitempty"`
-	Expires int64  `json:"expires,omitempty"`
+	Blake2bDTarget string `json:"blake2bd_target,omitempty"`
+	CuckarooTarget         string `json:"cuckaroo_target,omitempty"`
+	CuckatooTarget         string `json:"cuckatoo_target,omitempty"`
+	Expires        int64  `json:"expires,omitempty"`
 
 	// Mutations from BIP 0023.
 	MaxTime    int64    `json:"maxtime,omitempty"`

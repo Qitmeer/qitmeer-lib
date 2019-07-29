@@ -163,7 +163,7 @@ func (c *Cuckoo) PoW(siphashKey []byte) ([]uint32, bool) {
 }
 
 //Verify cuckoo nonces.
-func Verify(sipkey []byte, nonces []uint32) error {
+func VerifyCuckaroo(sipkey []byte, nonces []uint32) error {
 	sip := siphash.Newsip(sipkey)
 	var uvs [2 * ProofSize]uint32
 	var xor0, xor1 uint32

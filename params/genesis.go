@@ -7,6 +7,7 @@
 package params
 
 import (
+	"github.com/HalalChain/qitmeer-lib/core/types/pow"
 	"time"
 	"github.com/HalalChain/qitmeer-lib/core/types"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
@@ -75,7 +76,7 @@ var genesisBlock = types.Block{
 		StateRoot:	 hash.Hash{},
 		Timestamp:    time.Unix(1561939200, 0), // 2019-07-01 00:00:00 GMT
 		Difficulty:         0x1b01ffff,               // Difficulty 32767
-		Nonce:        0x00000000,
+		Pow:&pow.Blake2bd{},
 	},
 	Transactions: []*types.Transaction{&genesisCoinbaseTx},
 }
@@ -102,11 +103,10 @@ var testNetGenesisBlock = types.Block{
 		TxRoot:       testNetGenesisMerkleRoot,
 		Timestamp:    time.Unix(1547735581, 0), // 2019-01-17 14:33:12 GMT
 		Difficulty:   0x1e00ffff,
-		Nonce:        0x00000000,
+		Pow:&pow.Blake2bd{},
 	},
 	Transactions: []*types.Transaction{&testNetGenesisCoinbaseTx},
 }
-
 // testNetGenesisHash is the hash of the first block in the block chain for the
 // test network.
 var testNetGenesisHash = testNetGenesisBlock.BlockHash()
@@ -177,7 +177,7 @@ var privNetGenesisBlock = types.Block{
 		}),
 		Timestamp:    time.Unix(1530833717, 0), // 2018-07-05 23:35:17 GMT
 		Difficulty:   0x207fffff, // 545259519
-		Nonce:        0,
+		Pow:        &pow.Blake2bd{},
 	},
 	Transactions:  []*types.Transaction{&privNetGenesisCoinbaseTx},
 }

@@ -2,12 +2,12 @@
 package serialization
 
 import (
-	"github.com/HalalChain/qitmeer-lib/crypto/cuckoo"
-	"io"
-	"github.com/HalalChain/qitmeer-lib/core/protocol"
 	"encoding/binary"
-	"time"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
+	"github.com/HalalChain/qitmeer-lib/core/protocol"
+	"github.com/HalalChain/qitmeer-lib/core/types/pow"
+	"io"
+	"time"
 )
 
 // ReadElements reads multiple items from r.  It is equivalent to multiple
@@ -153,19 +153,22 @@ func readElement(r io.Reader, element interface{}) error {
 		*e = protocol.Network(rv)
 		return nil
 
-	case *[cuckoo.ProofSize]uint32:
-		//var cuckoocycles [cuckoocycle.ProofSize]uint32
-		var cuckoocycles [cuckoo.ProofSize]uint32
-		for i := 0; i < cuckoo.ProofSize; i++ {
-			rv, err := BinarySerializer.Uint32(r, binary.LittleEndian)
-			cuckoocycles[i] = rv
-			if err != nil {
-				return err
-			}
+	case *pow.IPow:
+		//pow
+		b := make([]byte,208)
+		_, err := io.ReadFull(r,b)
+		if err != nil {
+			return err
 		}
-		*e = cuckoocycles
-		return nil
-
+		powType := littleEndian.Uint32(b[8:12])
+		switch powType {
+		case uint32(pow.BLAKE2BD):
+			powStruct := &pow.Blake2bd{}
+			powStruct.Nonce = littleEndian.Uint64(b[0:8])
+			copy(powStruct.ProofData[:],b[8:208])
+			*e = powStruct
+			return nil
+		}
 	}
 
 	// Fall back to the slower binary.Read if a fast path was not available
@@ -259,12 +262,11 @@ func writeElement(w io.Writer, element interface{}) error {
 			return err
 		}
 		return nil
-	case [cuckoo.ProofSize]uint32:
-		for i := 0; i < cuckoo.ProofSize; i++ {
-			err := BinarySerializer.PutUint32(w, littleEndian, e[i])
-			if err != nil {
-				return err
-			}
+	case *pow.Blake2bd:
+		b := e.Bytes()
+		_, err := w.Write(b[:])
+		if err != nil {
+			return err
 		}
 		return nil
 	}

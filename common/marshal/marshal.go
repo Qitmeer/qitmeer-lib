@@ -199,7 +199,7 @@ func MarshalJsonBlock(b *types.SerializedBlock, inclTx bool, fullTx bool,
 		{Key:"stateRoot", Val:head.StateRoot.String()},
 		{Key:"bits", Val:strconv.FormatUint(uint64(head.Difficulty), 16)},
 		{Key:"difficulty", Val:head.Difficulty},
-		{Key:"nonce", Val:head.Nonce},
+		{Key:"pow", Val:head.Pow},
 		{Key:"timestamp", Val:head.Timestamp.Format("2006-01-02 15:04:05.0000")},
 	}...)
 	tempArr:=[]string{}

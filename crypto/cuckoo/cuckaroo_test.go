@@ -19,7 +19,7 @@ func TestCuckooMining(t *testing.T) {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	var targetDifficulty = big.NewInt(2)
 	targetDifficulty.Lsh(targetDifficulty, uint(255-targetBits))
-	fmt.Printf("Target Diff:%064x\n", targetDifficulty.Bytes())
+	fmt.Printf("Blake2bDTarget Diff:%064x\n", targetDifficulty.Bytes())
 	c := NewCuckoo()
 
 	var cycleNonces []uint32
@@ -36,7 +36,7 @@ func TestCuckooMining(t *testing.T) {
 		if !isFound {
 			continue
 		}
-		if err := Verify(siphashKey[:16], cycleNonces); err != nil {
+		if err := VerifyCuckaroo(siphashKey[:16], cycleNonces); err != nil {
 			continue
 		}
 		cycleNoncesHash := hash.DoubleHashB(Uint32ToBytes(cycleNonces))

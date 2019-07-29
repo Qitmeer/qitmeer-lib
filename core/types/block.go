@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 	s "github.com/HalalChain/qitmeer-lib/core/serialization"
-	"github.com/HalalChain/qitmeer-lib/crypto/cuckoo"
+	"github.com/HalalChain/qitmeer-lib/core/types/pow"
 	"io"
 	"math/big"
 	"time"
@@ -17,8 +17,7 @@ import (
 // Version 4 bytes + ParentRoot 32 bytes + TxRoot 32 bytes + StateRoot 32 bytes
 // Difficulty 4 bytes   + Timestamp 8 bytes + Nonce 8 bytes +ExNonce 8 bytes + circle nonces 80
 // --> Total 208 bytes.
-const CirclePayload  = cuckoo.ProofSize * 4
-const MaxBlockHeaderPayload = 4 + (hash.HashSize * 3) + 4 + 8 + 8 +8 + CirclePayload
+const MaxBlockHeaderPayload = 4 + (hash.HashSize * 3) + 4 + 8 + 8 + 208
 
 // MaxBlockPayload is the maximum bytes a block message can be in bytes.
 const MaxBlockPayload = 1048576 // 1024*1024 (1MB)
@@ -32,7 +31,7 @@ const MaxParentsPerBlock=50
 
 // blockHeaderLen is a constant that represents the number of bytes for a block
 // header.
-const blockHeaderLen = 180 + CirclePayload
+const blockHeaderLen = 328
 
 // MaxBlocksPerMsg is the maximum number of blocks allowed per message.
 const MaxBlocksPerMsg = 500
@@ -67,9 +66,8 @@ type BlockHeader struct {
 	// can all of the state data (stake, receipt, utxo) in state root?
 	StateRoot	hash.Hash
 
-
-	// Difficulty target for tx
-	Difficulty  uint32
+	// Difficulty
+	Difficulty     uint32
 
 	// extra nonce for miner
 	ExNonce     uint64
@@ -77,16 +75,8 @@ type BlockHeader struct {
 	// TimeStamp
 	Timestamp   time.Time
 
-	// Nonce
-	Nonce       uint64
-
-	//might extra data here
-
-	// Size is the size of the serialized block/block-header in its entirety.
-
-	// The variable-sized block might require a size serialized & verify-check
-	// BlockSize uint32
-	CircleNonces [cuckoo.ProofSize]uint32
+	// pow blake2bd | cuckaroo | cuckatoo
+	Pow pow.IPow
 
 }
 
@@ -101,22 +91,22 @@ func (h *BlockHeader) BlockHash() hash.Hash {
 	_ = writeBlockHeader(buf,0, h)
 	// TODO, add an abstract layer of hash func
 	// TODO, double sha256 or other crypto hash
-	return hash.DoubleHashH(buf.Bytes())
+	return h.Pow.GetBlockHash(buf.Bytes())
 }
 
-// the purpose is computing the cuckoo sip hash key
-func (h *BlockHeader) BlockHashWithoutCircle() hash.Hash {
+// BlockHash computes the block identifier hash for the given block header.
+func (h *BlockHeader) BlockSipHash() hash.Hash {
 	// Encode the header and hash256 everything prior to the number of
 	// transactions.  Ignore the error returns since there is no way the
 	// encode could fail except being out of memory which would cause a
 	// run-time panic.
-	buf := bytes.NewBuffer(make([]byte, 0, MaxBlockHeaderPayload-CirclePayload))
+	buf := bytes.NewBuffer(make([]byte, 0, 128))
 	// TODO, redefine the protocol version and storage
-	_ = writeBlockHeaderWithoutCircle(buf,0, h)
+	_ = writeBlockHeader(buf,0, h)
 	// TODO, add an abstract layer of hash func
-	// TODO, double sha256 or other crypto hash
 	return hash.DoubleHashH(buf.Bytes())
 }
+
 
 // readBlockHeader reads a block header from io reader.  See Deserialize for
 // decoding block headers stored to disk, such as in a database, as opposed to
@@ -125,8 +115,8 @@ func (h *BlockHeader) BlockHashWithoutCircle() hash.Hash {
 func readBlockHeader(r io.Reader,pver uint32, bh *BlockHeader) error {
 	// TODO fix time ambiguous
 	return s.ReadElements(r, &bh.Version, &bh.ParentRoot, &bh.TxRoot,
-		&bh.StateRoot, &bh.Difficulty,&bh.ExNonce, (*s.Int64Time)(&bh.Timestamp),
-		&bh.Nonce,&bh.CircleNonces)
+		&bh.StateRoot, &bh.Difficulty, &bh.ExNonce, (*s.Int64Time)(&bh.Timestamp),
+		&bh.Pow)
 }
 
 // writeBlockHeader writes a block header to w.  See Serialize for
@@ -134,18 +124,16 @@ func readBlockHeader(r io.Reader,pver uint32, bh *BlockHeader) error {
 // opposed to encoding for the type.
 // TODO, redefine the protocol version and storage
 func writeBlockHeader(w io.Writer, pver uint32, bh *BlockHeader) error {
+	//if bh.Pow == nil{
+	//	log.Fatalln(1234)
+	//	os.Exit(1)
+	//}
 	// TODO fix time ambiguous
 	sec := bh.Timestamp.Unix()
 	return s.WriteElements(w, bh.Version, &bh.ParentRoot, &bh.TxRoot,
-		&bh.StateRoot, bh.Difficulty,bh.ExNonce, sec, bh.Nonce,bh.CircleNonces)
+		&bh.StateRoot,bh.Difficulty, bh.ExNonce, sec, bh.Pow)
 }
 
-// the purpose is encoding for block hash with out circle nonces.
-func writeBlockHeaderWithoutCircle(w io.Writer, pver uint32, bh *BlockHeader) error {
-	sec := bh.Timestamp.Unix()
-	return s.WriteElements(w, bh.Version, &bh.ParentRoot, &bh.TxRoot,
-		&bh.StateRoot, bh.Difficulty,bh.ExNonce, sec, bh.Nonce)
-}
 
 // This function get the simple hash use each parents string, so it can't use to
 // check for block body .At present we use the merkles tree.
