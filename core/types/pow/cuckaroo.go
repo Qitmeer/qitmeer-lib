@@ -1,7 +1,7 @@
 package pow
 
 import (
-	"encoding/binary"
+	"errors"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 	"github.com/HalalChain/qitmeer-lib/crypto/cuckoo"
 	"github.com/HalalChain/qitmeer-lib/log"
@@ -18,14 +18,17 @@ type Cuckaroo struct {
 	Pow
 }
 
-func (this *Cuckaroo) Verify(data []byte) bool{
+func (this *Cuckaroo) Verify(h hash.Hash,targetDiff uint64) error{
 	nonces := this.GetCircleNonces()
-	err := cuckoo.VerifyCuckaroo(data[:],nonces[:])
+	err := cuckoo.VerifyCuckaroo(h[:],nonces[:])
 	if err != nil{
 		log.Error("Verify Error!",err)
-		return false
+		return err
 	}
-	return true
+	if CalcCuckooDiff(this.CalcScale(),this.GetBlockHash([]byte{})) < targetDiff{
+		return errors.New("difficulty is too easy!")
+	}
+	return nil
 }
 
 func (this *Cuckaroo)GetBlockHash (data []byte) hash.Hash {
@@ -37,8 +40,8 @@ func (this *Cuckaroo)GetBlockHash (data []byte) hash.Hash {
 	return CuckooHash(circlNonces,int(this.GetEdgeBits()))
 }
 
-func (this *Cuckaroo) CalcScale () int {
-	return 1
+func (this *Cuckaroo) CalcScale () int64 {
+	return 1856
 }
 
 func (this *Cuckaroo) GetNonce () uint64 {
@@ -47,19 +50,4 @@ func (this *Cuckaroo) GetNonce () uint64 {
 
 func (this *Cuckaroo) GetPowType () PowType {
 	return CUCKAROO
-}
-
-func (this *Cuckaroo) GetEdgeBits () uint32 {
-	return binary.LittleEndian.Uint32(this.ProofData[EDGE_BITS_START:EDGE_BITS_END])
-}
-
-func (this *Cuckaroo) GetCircleNonces () (nonces [42]uint32) {
-	nonces = [42]uint32{}
-	j := 0
-	for i :=CIRCLE_NONCE_START;i<CIRCLE_NONCE_END;i+=4{
-		nonceBytes := this.ProofData[i:i+4]
-		nonces[j] = binary.LittleEndian.Uint32(nonceBytes)
-		j++
-	}
-	return
 }

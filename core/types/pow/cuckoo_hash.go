@@ -1,11 +1,14 @@
 package pow
 
 import (
+	"encoding/binary"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 	"github.com/HalalChain/qitmeer-lib/common/util"
+	"math/big"
 	"sort"
 )
 
+//calc cuckoo hash
 func CuckooHash(nonces []uint64,nonce_bits int) hash.Hash {
 	sort.Slice(nonces, func(i, j int) bool {
 		return nonces[i] < nonces[j]
@@ -20,5 +23,20 @@ func CuckooHash(nonces []uint64,nonce_bits int) hash.Hash {
 			}
 		}
 	}
-	return hash.HashH(bitvec.Bytes())
+	h := hash.HashH(bitvec.Bytes())
+	util.ReverseBytes(h[:])
+	return h
+}
+
+//calc cuckoo diff
+func CalcCuckooDiff(scale int64,blockHash hash.Hash) uint64 {
+	c := &big.Int{}
+	util.ReverseBytes(blockHash[:])
+	c.SetUint64(binary.BigEndian.Uint64(blockHash[:8]))
+	a := big.NewInt(scale)
+	d := big.NewInt(1)
+	d.Lsh(d,64)
+	a.Mul(a,d)
+	e := a.Div(a,c)
+	return e.Uint64()
 }

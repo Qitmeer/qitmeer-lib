@@ -19,11 +19,13 @@ const (
 	POW_TYPE_END = 132
 	POW_START = 120
 	POW_END = 328
+
+	DIFF_START = 100
+	DIFF_END = 104
 )
 
 type IPow interface {
-	Verify(data []byte) bool
-	CalcScale() int
+	Verify(h hash.Hash,targetDiff uint64) error
 	GetNonce() uint64
 	GetPowType() PowType
 	GetBlockHash(data []byte) hash.Hash
@@ -64,4 +66,19 @@ func GetInstance (powType PowType) IPow {
 		binary.LittleEndian.PutUint32(instance.ProofData[:4],uint32(powType))
 		return instance
 	}
+}
+
+func (this *Pow) GetCircleNonces () (nonces [42]uint32) {
+	nonces = [42]uint32{}
+	j := 0
+	for i :=CIRCLE_NONCE_START;i<CIRCLE_NONCE_END;i+=4{
+		nonceBytes := this.ProofData[i:i+4]
+		nonces[j] = binary.LittleEndian.Uint32(nonceBytes)
+		j++
+	}
+	return
+}
+
+func (this *Pow) GetEdgeBits () uint32 {
+	return binary.LittleEndian.Uint32(this.ProofData[EDGE_BITS_START:EDGE_BITS_END])
 }

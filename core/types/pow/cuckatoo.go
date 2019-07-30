@@ -1,20 +1,31 @@
 package pow
 
 import (
-	"encoding/binary"
+	"errors"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
+	"github.com/HalalChain/qitmeer-lib/crypto/cuckoo"
+	"github.com/HalalChain/qitmeer-lib/log"
 )
 
 type Cuckatoo struct {
 	Pow
 }
 
-func (this *Cuckatoo) Verify(data []byte) bool{
-	return true
+func (this *Cuckatoo) Verify(h hash.Hash,targetDiff uint64) error{
+	nonces := this.GetCircleNonces()
+	err := cuckoo.VerifyCuckatoo(h[:],nonces[:])
+	if err != nil{
+		log.Error("Verify Error!",err)
+		return err
+	}
+	if CalcCuckooDiff(this.CalcScale(),this.GetBlockHash([]byte{})) < targetDiff{
+		return errors.New("difficulty is too easy!")
+	}
+	return nil
 }
 
-func (this *Cuckatoo) CalcScale () int {
-	return 1
+func (this *Cuckatoo) CalcScale () int64 {
+	return 1856
 }
 func (this *Cuckatoo)GetBlockHash (data []byte) hash.Hash {
 	circlNonces := []uint64{}
@@ -31,19 +42,4 @@ func (this *Cuckatoo) GetNonce () uint64 {
 
 func (this *Cuckatoo) GetPowType () PowType {
 	return CUCKATOO
-}
-
-func (this *Cuckatoo) GetEdgeBits () uint32 {
-	return binary.LittleEndian.Uint32(this.ProofData[EDGE_BITS_START:EDGE_BITS_END])
-}
-
-func (this *Cuckatoo) GetCircleNonces () (nonces [42]uint32) {
-	nonces = [42]uint32{}
-	j := 0
-	for i :=CIRCLE_NONCE_START;i<CIRCLE_NONCE_END;i+=4{
-		nonceBytes := this.ProofData[i:i+4]
-		nonces[j] = binary.LittleEndian.Uint32(nonceBytes)
-		j++
-	}
-	return
 }
