@@ -124,10 +124,6 @@ func readBlockHeader(r io.Reader,pver uint32, bh *BlockHeader) error {
 // opposed to encoding for the type.
 // TODO, redefine the protocol version and storage
 func writeBlockHeader(w io.Writer, pver uint32, bh *BlockHeader) error {
-	//if bh.Pow == nil{
-	//	log.Fatalln(1234)
-	//	os.Exit(1)
-	//}
 	// TODO fix time ambiguous
 	sec := bh.Timestamp.Unix()
 	return s.WriteElements(w, bh.Version, &bh.ParentRoot, &bh.TxRoot,

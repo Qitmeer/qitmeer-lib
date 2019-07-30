@@ -44,3 +44,24 @@ func (this *Pow)Bytes() PowBytes {
 	copy(r[8:208],this.ProofData[:])
 	return PowBytes(r)
 }
+
+func GetInstance (powType PowType) IPow {
+	switch powType {
+	case BLAKE2BD:
+		instance := &Blake2bd{}
+		binary.LittleEndian.PutUint32(instance.ProofData[:4],uint32(powType))
+		return instance
+	case CUCKAROO:
+		instance := &Cuckaroo{}
+		binary.LittleEndian.PutUint32(instance.ProofData[:4],uint32(powType))
+		return instance
+	case CUCKATOO:
+		instance := &Cuckatoo{}
+		binary.LittleEndian.PutUint32(instance.ProofData[:4],uint32(powType))
+		return instance
+	default:
+		instance := &Blake2bd{}
+		binary.LittleEndian.PutUint32(instance.ProofData[:4],uint32(powType))
+		return instance
+	}
+}
