@@ -2,6 +2,7 @@ package pow
 
 import (
 	"encoding/binary"
+	"encoding/hex"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 )
 
@@ -24,10 +25,27 @@ const (
 	DIFF_END = 104
 )
 
+var PowMapString = map[PowType]interface{}{
+	BLAKE2BD : "blake2bd",
+	CUCKAROO : "cuckaroo",
+	CUCKATOO : "cuckatoo",
+}
+
+type ProofDataType [PROOFDATA_LENGTH]byte
+
+func (this *ProofDataType) String() string{
+	return hex.EncodeToString(this[:])
+}
+
+func (this *ProofDataType) Bytes() []byte{
+	return this[:]
+}
+
 type IPow interface {
 	Verify(h hash.Hash,targetDiff uint64) error
 	GetNonce() uint64
 	GetPowType() PowType
+	GetProofData() string
 	GetBlockHash(data []byte) hash.Hash
 	Bytes() PowBytes
 }
@@ -35,7 +53,7 @@ type IPow interface {
 
 type Pow struct {
 	Nonce uint64 //header nonce
-	ProofData [PROOFDATA_LENGTH]byte // 4 powType + 4 edge_bits + 200 bytes circle length ... may other new pow proof data struct ,but the first 4 bytes must be pwo type
+	ProofData ProofDataType // 4 powType + 4 edge_bits + 200 bytes circle length ... may other new pow proof data struct ,but the first 4 bytes must be pwo type
 }
 
 func (this *Pow)Bytes() PowBytes {
@@ -105,4 +123,8 @@ func (this *Pow) SetScale (scale uint32) {
 
 func (this *Pow) GetScale () int64 {
 	return int64(binary.LittleEndian.Uint32(this.ProofData[8:12]))
+}
+
+func (this *Pow) GetProofData () string {
+	return this.ProofData.String()
 }

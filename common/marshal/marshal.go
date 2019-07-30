@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/HalalChain/qitmeer-lib/core/message"
+	"github.com/HalalChain/qitmeer-lib/core/types/pow"
 	"strconv"
 	"github.com/HalalChain/qitmeer-lib/core/json"
 	"github.com/HalalChain/qitmeer-lib/core/protocol"
@@ -199,7 +200,11 @@ func MarshalJsonBlock(b *types.SerializedBlock, inclTx bool, fullTx bool,
 		{Key:"stateRoot", Val:head.StateRoot.String()},
 		{Key:"bits", Val:strconv.FormatUint(uint64(head.Difficulty), 16)},
 		{Key:"difficulty", Val:head.Difficulty},
-		{Key:"pow", Val:head.Pow},
+		{Key:"pow", Val : map[string]interface{}{
+			"nonce":head.Pow.GetNonce(),
+			"pow_type":pow.PowMapString[head.Pow.GetPowType()],
+			"proof_data":head.Pow.GetProofData(),
+		},},
 		{Key:"timestamp", Val:head.Timestamp.Format("2006-01-02 15:04:05.0000")},
 	}...)
 	tempArr:=[]string{}
