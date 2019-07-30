@@ -7,6 +7,7 @@
 package params
 
 import (
+	"math"
 	"math/big"
 	"github.com/HalalChain/qitmeer-lib/common"
 	"github.com/HalalChain/qitmeer-lib/core/protocol"
@@ -36,6 +37,8 @@ var PrivNetParams = Params{
 	GenesisHash:              &privNetGenesisHash,
 	PowLimit:                 privNetPowLimit,
 	PowLimitBits:             0x207fffff,
+	CuckooPowLimitBits:		  uint32(math.Pow(1,1)),
+	CuckooScale :			  1856,
 	ReduceMinDifficulty:      false,
 	MinDiffReductionTime:     0, // Does not apply since ReduceMinDifficulty false
 	GenerateSupported:        true,

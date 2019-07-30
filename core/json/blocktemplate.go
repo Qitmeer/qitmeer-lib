@@ -82,8 +82,9 @@ type GetBlockTemplateResult struct {
 
 	// Basic pool extension from BIP 0023.
 	Blake2bDTarget string `json:"blake2bd_target,omitempty"`
-	CuckarooTarget         string `json:"cuckaroo_target,omitempty"`
-	CuckatooTarget         string `json:"cuckatoo_target,omitempty"`
+	CuckarooTarget         uint64 `json:"cuckaroo_target,omitempty"`
+	CuckatooTarget         uint64 `json:"cuckatoo_target,omitempty"`
+	CuckooScale         uint64 `json:"cuckoo_scale,omitempty"`
 	Expires        int64  `json:"expires,omitempty"`
 
 	// Mutations from BIP 0023.

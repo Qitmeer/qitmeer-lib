@@ -106,6 +106,11 @@ type Params struct {
 	// block in compact form.
 	PowLimitBits uint32
 
+	// Cuckoo PowLimitBits defines the highest allowed proof of work value for a
+	// block in compact form.
+	CuckooPowLimitBits uint32
+	CuckooScale uint64
+
 	// WorkDiffAlpha is the stake difficulty EMA calculation alpha (smoothing)
 	// value. It is different from a normal EMA alpha. Closer to 1 --> smoother.
 	WorkDiffAlpha int64

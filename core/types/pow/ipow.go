@@ -51,19 +51,19 @@ func GetInstance (powType PowType) IPow {
 	switch powType {
 	case BLAKE2BD:
 		instance := &Blake2bd{}
-		binary.LittleEndian.PutUint32(instance.ProofData[:4],uint32(powType))
+		instance.SetType(powType)
 		return instance
 	case CUCKAROO:
 		instance := &Cuckaroo{}
-		binary.LittleEndian.PutUint32(instance.ProofData[:4],uint32(powType))
+		instance.SetType(powType)
 		return instance
 	case CUCKATOO:
 		instance := &Cuckatoo{}
-		binary.LittleEndian.PutUint32(instance.ProofData[:4],uint32(powType))
+		instance.SetType(powType)
 		return instance
 	default:
 		instance := &Blake2bd{}
-		binary.LittleEndian.PutUint32(instance.ProofData[:4],uint32(powType))
+		instance.SetType(powType)
 		return instance
 	}
 }
@@ -81,4 +81,28 @@ func (this *Pow) GetCircleNonces () (nonces [42]uint32) {
 
 func (this *Pow) GetEdgeBits () uint32 {
 	return binary.LittleEndian.Uint32(this.ProofData[EDGE_BITS_START:EDGE_BITS_END])
+}
+
+func (this *Pow) SetType (powType PowType) {
+	binary.LittleEndian.PutUint32(this.ProofData[:4],uint32(powType))
+}
+
+func (this *Pow) SetEdgeBits (edge_bits uint32) {
+	binary.LittleEndian.PutUint32(this.ProofData[4:8],uint32(edge_bits))
+}
+
+func (this *Pow) SetCircleEdges (edges []uint32) {
+	for i:=0 ;i<len(edges);i++{
+		 b := make([]byte,4)
+		 binary.LittleEndian.PutUint32(b,edges[i])
+		 copy(this.ProofData[(i*4)+12:(i*4)+16],b)
+	}
+}
+
+func (this *Pow) SetScale (scale uint32) {
+	binary.LittleEndian.PutUint32(this.ProofData[8:12],uint32(scale))
+}
+
+func (this *Pow) GetScale () int64 {
+	return int64(binary.LittleEndian.Uint32(this.ProofData[8:12]))
 }

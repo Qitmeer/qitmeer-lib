@@ -12,6 +12,18 @@ type Blake2bd struct {
 
 func (this *Blake2bd) Verify(h hash.Hash,targetDiff uint64) error{
 	target := CompactToBig(uint32(targetDiff))
+	if target.Sign() <= 0 {
+		str := fmt.Sprintf("block target difficulty of %064x is too "+
+			"low", target)
+		return errors.New(str)
+	}
+
+	// The target difficulty must be less than the maximum allowed.
+	//if target.Cmp(powLimit) > 0 {
+	//	str := fmt.Sprintf("block target difficulty of %064x is "+
+	//		"higher than max of %064x", target, powLimit)
+	//	return errors.New(str)
+	//}
 	hashNum := HashToBig(&h)
 	if hashNum.Cmp(target) > 0 {
 		str := fmt.Sprintf("block hash of %064x is higher than"+

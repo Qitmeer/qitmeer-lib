@@ -12,7 +12,7 @@ import (
 const (
 	Edgebits = 24 //the 2-log of the graph size,which is the size in bits of the node identifiers. the size of the edge indices in the Cuckoo Cycle graph.
 	//Edgebits  = 29
-	ProofSize = 20               //ProofSize is the number of nonces and cycles. the (even) length of the cycle to be found. a minimum of 12 is recommended.
+	ProofSize = 42               //ProofSize is the number of nonces and cycles. the (even) length of the cycle to be found. a minimum of 12 is recommended.
 	Nedge     = 1 << Edgebits    //number of edges：
 	edgemask  = Nedge - 1        // used to mask siphash output
 	nnode     = 2 * Nedge        //

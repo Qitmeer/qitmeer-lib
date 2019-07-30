@@ -7,6 +7,7 @@
 package params
 
 import (
+	"math"
 	"time"
 	"math/big"
 	"github.com/HalalChain/qitmeer-lib/common"
@@ -34,6 +35,8 @@ var TestNetParams = Params{
 	GenesisHash:              &testNetGenesisHash,
 	PowLimit:                 testNetPowLimit,
 	PowLimitBits:             0x1e00ffff,
+	CuckooPowLimitBits:		  uint32(math.Pow(10,5)),
+	CuckooScale :			  1856,
 	ReduceMinDifficulty:      false,
 	MinDiffReductionTime:     0, // Does not apply since ReduceMinDifficulty false
 	GenerateSupported:        true,

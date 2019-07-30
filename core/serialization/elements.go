@@ -168,6 +168,18 @@ func readElement(r io.Reader, element interface{}) error {
 			copy(powStruct.ProofData[:],b[8:208])
 			*e = powStruct
 			return nil
+		case uint32(pow.CUCKAROO):
+			powStruct := &pow.Cuckaroo{}
+			powStruct.Nonce = littleEndian.Uint64(b[0:8])
+			copy(powStruct.ProofData[:],b[8:208])
+			*e = powStruct
+			return nil
+		case uint32(pow.CUCKATOO):
+			powStruct := &pow.Cuckatoo{}
+			powStruct.Nonce = littleEndian.Uint64(b[0:8])
+			copy(powStruct.ProofData[:],b[8:208])
+			*e = powStruct
+			return nil
 		}
 	}
 
@@ -263,6 +275,20 @@ func writeElement(w io.Writer, element interface{}) error {
 		}
 		return nil
 	case *pow.Blake2bd:
+		b := e.Bytes()
+		_, err := w.Write(b[:])
+		if err != nil {
+			return err
+		}
+		return nil
+	case *pow.Cuckaroo:
+		b := e.Bytes()
+		_, err := w.Write(b[:])
+		if err != nil {
+			return err
+		}
+		return nil
+	case *pow.Cuckatoo:
 		b := e.Bytes()
 		_, err := w.Write(b[:])
 		if err != nil {

@@ -102,7 +102,7 @@ func (h *BlockHeader) BlockSipHash() hash.Hash {
 	// run-time panic.
 	buf := bytes.NewBuffer(make([]byte, 0, 128))
 	// TODO, redefine the protocol version and storage
-	_ = writeBlockHeader(buf,0, h)
+	_ = writeSipHeader(buf,0, h)
 	// TODO, add an abstract layer of hash func
 	return hash.DoubleHashH(buf.Bytes())
 }
@@ -128,6 +128,12 @@ func writeBlockHeader(w io.Writer, pver uint32, bh *BlockHeader) error {
 	sec := bh.Timestamp.Unix()
 	return s.WriteElements(w, bh.Version, &bh.ParentRoot, &bh.TxRoot,
 		&bh.StateRoot,bh.Difficulty, bh.ExNonce, sec, bh.Pow)
+}
+
+func writeSipHeader(w io.Writer, pver uint32, bh *BlockHeader) error {
+	sec := bh.Timestamp.Unix()
+	return s.WriteElements(w, bh.Version, &bh.ParentRoot, &bh.TxRoot,
+		&bh.StateRoot,bh.Difficulty, bh.ExNonce, sec, bh.Pow.GetNonce())
 }
 
 
