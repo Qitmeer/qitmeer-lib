@@ -5,6 +5,7 @@ import (
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 	"github.com/HalalChain/qitmeer-lib/common/util"
 	"github.com/HalalChain/qitmeer-lib/crypto/cuckoo"
+	"golang.org/x/exp/errors/fmt"
 	"math/big"
 	"sort"
 )
@@ -92,6 +93,6 @@ func (this *Cuckoo)CalcCuckooDiff(scale int64,blockHash hash.Hash) uint64 {
 	d.Lsh(d,64)
 	a.Mul(a,d)
 	e := a.Div(a,c)
-	//fmt.Println("************current difficulty",e.Uint64())
+	fmt.Println(fmt.Sprintf("===================solution difficulty:%d",e.Uint64()))
 	return e.Uint64()
 }

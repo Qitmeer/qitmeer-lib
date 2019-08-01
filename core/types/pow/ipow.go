@@ -47,7 +47,7 @@ type IPow interface {
 	Verify(headerWithoutProofData []byte,targetDiff uint64) error
 	SetNonce(nonce uint64)
 	GetMinDiff(env int) uint64
-	GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int) *big.Int
+	GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int,currentPowPercent *big.Int) *big.Int
 	GetNonce() uint64
 	GetPowType() PowType
 	SetPowType(powType PowType)
@@ -55,6 +55,7 @@ type IPow interface {
 	SetProofData([]byte)
 	GetBlockHash(data []byte) hash.Hash
 	Bytes() PowBytes
+	GetPercent() *big.Int
 }
 
 

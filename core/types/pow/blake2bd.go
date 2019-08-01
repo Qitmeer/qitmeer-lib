@@ -44,7 +44,17 @@ func (this *Blake2bd) GetMinDiff(env int) uint64{
 	return 0x1e00ffff
 }
 
-func (this *Blake2bd) GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int) *big.Int{
+func (this *Blake2bd) GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int,currentPowPercent *big.Int) *big.Int{
 	nextDiffBig := weightedSumDiv.Mul(weightedSumDiv, oldDiffBig)
+	if currentPowPercent.Cmp(this.GetPercent()) > 0{
+		currentPowPercent.Div(currentPowPercent,this.GetPercent())
+		nextDiffBig.Div(nextDiffBig,currentPowPercent)
+	}
 	return nextDiffBig
+}
+
+func (this *Blake2bd) GetPercent() *big.Int{
+	percent := big.NewInt(33) // is 33% percent
+	percent.Lsh(percent,32)
+	return percent
 }

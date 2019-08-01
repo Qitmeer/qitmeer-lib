@@ -31,7 +31,17 @@ func (this *Cuckatoo) GetMinDiff(env int) uint64{
 	return 3
 }
 
-func (this *Cuckatoo) GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int) *big.Int{
+func (this *Cuckatoo) GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int,currentPowPercent *big.Int) *big.Int{
 	nextDiffBig := oldDiffBig.Div(oldDiffBig, weightedSumDiv)
+	if currentPowPercent.Cmp(this.GetPercent()) > 0{
+		currentPowPercent.Div(currentPowPercent,this.GetPercent())
+		nextDiffBig.Mul(nextDiffBig,currentPowPercent)
+	}
 	return nextDiffBig
+}
+
+func (this *Cuckatoo) GetPercent() *big.Int{
+	percent := big.NewInt(33) // is 33% percent
+	percent.Lsh(percent,32)
+	return percent
 }
