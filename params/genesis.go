@@ -29,7 +29,7 @@ var genesisCoinbaseTx = types.Transaction{
 			SignScript: []byte{
 				0x00, 0x00,
 			},
-			BlockHeight: types.NullBlockHeight,
+			BlockOrder:  types.NullBlockOrder,
 			TxIndex:     types.NullTxIndex,
 			AmountIn:    types.NullValueIn,
 			Sequence:    0xffffffff,
@@ -99,6 +99,7 @@ var testNetGenesisMerkleRoot = testNetGenesisCoinbaseTx.TxHashFull()
 // serves as the public transaction ledger for the test network (version 3).
 var testNetGenesisBlock = types.Block{
 	Header: types.BlockHeader{
+		Version:      2,
 		ParentRoot:   hash.Hash{},
 		TxRoot:       testNetGenesisMerkleRoot,
 		Timestamp:    time.Unix(1547735581, 0), // 2019-01-17 14:33:12 GMT
