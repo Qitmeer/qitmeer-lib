@@ -4,12 +4,14 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
+	"math/big"
 )
 
 // proof data length 204
+const POW_LENGTH = 208
 const PROOFDATA_LENGTH = 200
 type PowType int
-type PowBytes [208]byte
+type PowBytes [POW_LENGTH]byte
 
 const (
 	BLAKE2BD PowType = 0
@@ -42,89 +44,75 @@ func (this *ProofDataType) Bytes() []byte{
 }
 
 type IPow interface {
-	Verify(h hash.Hash,targetDiff uint64) error
+	Verify(headerWithoutProofData []byte,targetDiff uint64) error
+	SetNonce(nonce uint64)
+	GetMinDiff(env int) uint64
+	GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int) *big.Int
 	GetNonce() uint64
 	GetPowType() PowType
+	SetPowType(powType PowType)
 	GetProofData() string
+	SetProofData([]byte)
 	GetBlockHash(data []byte) hash.Hash
 	Bytes() PowBytes
 }
 
 
 type Pow struct {
-	Nonce uint64 //header nonce
-	ProofData ProofDataType // 4 powType + 4 edge_bits + 200 bytes circle length ... may other new pow proof data struct ,but the first 4 bytes must be pwo type
+	Nonce uint64 //header nonce 8 bytes
+	ProofData ProofDataType // 4 powType + 4 edge_bits + 4 diff scale + 168  bytes circle length + other 20 bytes ... may other new pow proof data struct ,but the first 4 bytes must be pwo type
 }
 
 func (this *Pow)Bytes() PowBytes {
-	r := [208]byte{}
-	n := make([]byte,8)
+	nonceLen := POW_LENGTH - PROOFDATA_LENGTH
+	r := [POW_LENGTH]byte{}
+	n := make([]byte,nonceLen)
 	binary.LittleEndian.PutUint64(n,this.Nonce)
-	copy(r[0:8],n)
-	copy(r[8:208],this.ProofData[:])
+	copy(r[0:nonceLen],n)
+	copy(r[nonceLen:],this.ProofData[:])
 	return PowBytes(r)
 }
 
-func GetInstance (powType PowType) IPow {
+func GetInstance (powType PowType,nonce uint64,proofData []byte) IPow {
+	var instance IPow
 	switch powType {
 	case BLAKE2BD:
-		instance := &Blake2bd{}
-		instance.SetType(powType)
-		return instance
+		instance = &Blake2bd{}
 	case CUCKAROO:
-		instance := &Cuckaroo{}
-		instance.SetType(powType)
-		return instance
+		instance = &Cuckaroo{}
 	case CUCKATOO:
-		instance := &Cuckatoo{}
-		instance.SetType(powType)
-		return instance
+		instance = &Cuckatoo{}
 	default:
-		instance := &Blake2bd{}
-		instance.SetType(powType)
-		return instance
+		instance = &Blake2bd{}
 	}
+	instance.SetPowType(powType)
+	instance.SetNonce(nonce)
+	instance.SetProofData(proofData)
+	return instance
 }
 
-func (this *Pow) GetCircleNonces () (nonces [42]uint32) {
-	nonces = [42]uint32{}
-	j := 0
-	for i :=CIRCLE_NONCE_START;i<CIRCLE_NONCE_END;i+=4{
-		nonceBytes := this.ProofData[i:i+4]
-		nonces[j] = binary.LittleEndian.Uint32(nonceBytes)
-		j++
-	}
-	return
-}
-
-func (this *Pow) GetEdgeBits () uint32 {
-	return binary.LittleEndian.Uint32(this.ProofData[EDGE_BITS_START:EDGE_BITS_END])
-}
-
-func (this *Pow) SetType (powType PowType) {
+func (this *Pow) SetPowType (powType PowType) {
 	binary.LittleEndian.PutUint32(this.ProofData[:4],uint32(powType))
 }
 
-func (this *Pow) SetEdgeBits (edge_bits uint32) {
-	binary.LittleEndian.PutUint32(this.ProofData[4:8],uint32(edge_bits))
+func (this *Pow) GetPowType () PowType {
+	return PowType(binary.LittleEndian.Uint32(this.ProofData[:4]))
 }
 
-func (this *Pow) SetCircleEdges (edges []uint32) {
-	for i:=0 ;i<len(edges);i++{
-		 b := make([]byte,4)
-		 binary.LittleEndian.PutUint32(b,edges[i])
-		 copy(this.ProofData[(i*4)+12:(i*4)+16],b)
-	}
+func (this *Pow) GetNonce () uint64 {
+	return this.Nonce
 }
 
-func (this *Pow) SetScale (scale uint32) {
-	binary.LittleEndian.PutUint32(this.ProofData[8:12],uint32(scale))
-}
-
-func (this *Pow) GetScale () int64 {
-	return int64(binary.LittleEndian.Uint32(this.ProofData[8:12]))
+func (this *Pow) SetNonce (nonce uint64) {
+	this.Nonce = nonce
 }
 
 func (this *Pow) GetProofData () string {
 	return this.ProofData.String()
+}
+
+//set proof data except pow type
+func (this *Pow) SetProofData (data []byte) {
+	l := len(data)
+	copy(this.ProofData[4:l+4],data[:])
 }

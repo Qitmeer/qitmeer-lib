@@ -86,27 +86,22 @@ func (h *BlockHeader) BlockHash() hash.Hash {
 	// transactions.  Ignore the error returns since there is no way the
 	// encode could fail except being out of memory which would cause a
 	// run-time panic.
-	buf := bytes.NewBuffer(make([]byte, 0, MaxBlockHeaderPayload))
-	// TODO, redefine the protocol version and storage
-	_ = writeBlockHeader(buf,0, h)
-	// TODO, add an abstract layer of hash func
-	// TODO, double sha256 or other crypto hash
-	return h.Pow.GetBlockHash(buf.Bytes())
+	return h.Pow.GetBlockHash(h.BlockData())
 }
 
 // BlockHash computes the block identifier hash for the given block header.
-func (h *BlockHeader) BlockSipHash() hash.Hash {
+func (h *BlockHeader) BlockData() []byte {
 	// Encode the header and hash256 everything prior to the number of
 	// transactions.  Ignore the error returns since there is no way the
 	// encode could fail except being out of memory which would cause a
 	// run-time panic.
-	buf := bytes.NewBuffer(make([]byte, 0, 128))
+	buf := bytes.NewBuffer(make([]byte, 0, MaxBlockHeaderPayload-pow.PROOFDATA_LENGTH))
 	// TODO, redefine the protocol version and storage
-	_ = writeSipHeader(buf,0, h)
+	_ = writeBlockHeaderWithoutProofData(buf,0, h)
 	// TODO, add an abstract layer of hash func
-	return hash.DoubleHashH(buf.Bytes())
+	// TODO, double sha256 or other crypto hash
+	return buf.Bytes()
 }
-
 
 // readBlockHeader reads a block header from io reader.  See Deserialize for
 // decoding block headers stored to disk, such as in a database, as opposed to
@@ -130,12 +125,13 @@ func writeBlockHeader(w io.Writer, pver uint32, bh *BlockHeader) error {
 		&bh.StateRoot,bh.Difficulty, bh.ExNonce, sec, bh.Pow)
 }
 
-func writeSipHeader(w io.Writer, pver uint32, bh *BlockHeader) error {
+// write header data without proof data
+func writeBlockHeaderWithoutProofData(w io.Writer, pver uint32, bh *BlockHeader) error {
+	// TODO fix time ambiguous
 	sec := bh.Timestamp.Unix()
 	return s.WriteElements(w, bh.Version, &bh.ParentRoot, &bh.TxRoot,
 		&bh.StateRoot,bh.Difficulty, bh.ExNonce, sec, bh.Pow.GetNonce())
 }
-
 
 // This function get the simple hash use each parents string, so it can't use to
 // check for block body .At present we use the merkles tree.

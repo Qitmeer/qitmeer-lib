@@ -160,27 +160,10 @@ func readElement(r io.Reader, element interface{}) error {
 		if err != nil {
 			return err
 		}
-		powType := littleEndian.Uint32(b[8:12])
-		switch powType {
-		case uint32(pow.BLAKE2BD):
-			powStruct := &pow.Blake2bd{}
-			powStruct.Nonce = littleEndian.Uint64(b[0:8])
-			copy(powStruct.ProofData[:],b[8:208])
-			*e = powStruct
-			return nil
-		case uint32(pow.CUCKAROO):
-			powStruct := &pow.Cuckaroo{}
-			powStruct.Nonce = littleEndian.Uint64(b[0:8])
-			copy(powStruct.ProofData[:],b[8:208])
-			*e = powStruct
-			return nil
-		case uint32(pow.CUCKATOO):
-			powStruct := &pow.Cuckatoo{}
-			powStruct.Nonce = littleEndian.Uint64(b[0:8])
-			copy(powStruct.ProofData[:],b[8:208])
-			*e = powStruct
-			return nil
-		}
+		powType := pow.PowType(littleEndian.Uint32(b[8:12]))
+		//set pow type 4 bytes nonce 8 bytes and proof data except types
+		*e = pow.GetInstance(powType,littleEndian.Uint64(b[0:8]),b[12:208])
+		return nil
 	}
 
 	// Fall back to the slower binary.Read if a fast path was not available
