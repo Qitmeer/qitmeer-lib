@@ -3,9 +3,11 @@ package serialization
 
 import (
 	"encoding/binary"
+	"errors"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 	"github.com/HalalChain/qitmeer-lib/core/protocol"
 	"github.com/HalalChain/qitmeer-lib/core/types/pow"
+	"golang.org/x/exp/errors/fmt"
 	"io"
 	"time"
 )
@@ -161,6 +163,9 @@ func readElement(r io.Reader, element interface{}) error {
 			return err
 		}
 		powType := pow.PowType(littleEndian.Uint32(b[8:12]))
+		if _,ok := pow.PowMapString[powType];!ok{
+			return errors.New(fmt.Sprintf("powType:%d don't supported!",powType))
+		}
 		//set pow type 4 bytes nonce 8 bytes and proof data except types
 		*e = pow.GetInstance(powType,littleEndian.Uint64(b[0:8]),b[12:208])
 		return nil
