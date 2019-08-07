@@ -2,10 +2,10 @@ package pow
 
 import (
 	"encoding/binary"
+	"fmt"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 	"github.com/HalalChain/qitmeer-lib/common/util"
 	"github.com/HalalChain/qitmeer-lib/crypto/cuckoo"
-	"golang.org/x/exp/errors/fmt"
 	"math/big"
 	"sort"
 )
