@@ -4,10 +4,10 @@ package serialization
 import (
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 	"github.com/HalalChain/qitmeer-lib/core/protocol"
 	"github.com/HalalChain/qitmeer-lib/core/types/pow"
-	"golang.org/x/exp/errors/fmt"
 	"io"
 	"time"
 )
