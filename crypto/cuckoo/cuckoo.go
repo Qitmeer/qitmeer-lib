@@ -1,9 +1,9 @@
 package cuckoo
 
 import (
+	"errors"
 	"fmt"
 	"github.com/HalalChain/qitmeer-lib/crypto/cuckoo/siphash"
-	"github.com/pkg/errors"
 	"runtime"
 	"sort"
 	"sync"
