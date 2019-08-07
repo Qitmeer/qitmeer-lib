@@ -25,7 +25,8 @@ type BlockTemplate struct {
 	Blake2bDTarget uint64
 	CuckarooTarget uint64
 	CuckatooTarget uint64
-	CuckooScale uint64
+	CuckarooScale uint64
+	CuckatooScale uint64
 
 	// ValidPayAddress indicates whether or not the template coinbase pays
 	// to an address or is redeemable by anyone.  See the documentation on

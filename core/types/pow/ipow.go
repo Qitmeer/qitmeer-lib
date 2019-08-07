@@ -43,11 +43,27 @@ func (this *ProofDataType) Bytes() []byte{
 	return this[:]
 }
 
+type PowConfig struct {
+	// PowLimitBits defines the highest allowed proof of work value for a
+	// block in compact form.
+	PowLimitBits uint32
+
+	// Cuckoo PowLimitBits defines the highest allowed proof of work value for a
+	// block in compact form.
+	CuckarooPowLimitBits uint32
+	CuckatooPowLimitBits uint32
+	CuckarooScale uint64
+	CuckatooScale uint64
+	//percent of pow
+	CuckarooPercent int
+	CuckatooPercent int
+	Blake2bDPercent int
+}
+
 type IPow interface {
 	Verify(headerWithoutProofData []byte,targetDiff uint64) error
 	SetNonce(nonce uint64)
-	GetMinDiff(env int) uint64
-	GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int,currentPowPercent *big.Int) *big.Int
+	GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int,currentPowPercent *big.Int,param *PowConfig) *big.Int
 	GetNonce() uint64
 	GetPowType() PowType
 	SetPowType(powType PowType)
@@ -55,7 +71,8 @@ type IPow interface {
 	SetProofData([]byte)
 	GetBlockHash(data []byte) hash.Hash
 	Bytes() PowBytes
-	GetPercent() *big.Int
+	GetMinDiff(param *PowConfig) uint64
+	PowPercent(param *PowConfig) *big.Int
 }
 
 

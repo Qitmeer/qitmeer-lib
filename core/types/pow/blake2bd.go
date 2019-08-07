@@ -39,22 +39,22 @@ func (this *Blake2bd)GetBlockHash (data []byte) hash.Hash {
 	return hash.DoubleHashH(data)
 }
 
-func (this *Blake2bd) GetMinDiff(env int) uint64{
-	//env 0 private 1 test 2 main
-	return 0x1e00ffff
-}
-
-func (this *Blake2bd) GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int,currentPowPercent *big.Int) *big.Int{
+func (this *Blake2bd) GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int,currentPowPercent *big.Int,param *PowConfig) *big.Int{
 	nextDiffBig := weightedSumDiv.Mul(weightedSumDiv, oldDiffBig)
-	if currentPowPercent.Cmp(this.GetPercent()) > 0{
-		currentPowPercent.Div(currentPowPercent,this.GetPercent())
+	targetPercent := this.PowPercent(param)
+	if currentPowPercent.Cmp(targetPercent) > 0{
+		currentPowPercent.Div(currentPowPercent,targetPercent)
 		nextDiffBig.Div(nextDiffBig,currentPowPercent)
 	}
 	return nextDiffBig
 }
 
-func (this *Blake2bd) GetPercent() *big.Int{
-	percent := big.NewInt(33) // is 33% percent
-	percent.Lsh(percent,32)
-	return percent
+func (this *Blake2bd) PowPercent(param *PowConfig) *big.Int{
+	targetPercent := big.NewInt(int64(param.Blake2bDPercent))
+	targetPercent.Lsh(targetPercent,32)
+	return targetPercent
+}
+
+func (this *Blake2bd) GetMinDiff(param *PowConfig) uint64{
+	return uint64(param.PowLimitBits)
 }

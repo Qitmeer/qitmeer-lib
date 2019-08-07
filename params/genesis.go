@@ -112,6 +112,33 @@ var testNetGenesisBlock = types.Block{
 // test network.
 var testNetGenesisHash = testNetGenesisBlock.BlockHash()
 
+
+// TestPowNet ------------------------------------------------------------------------
+
+//
+var testPowNetGenesisCoinbaseTx = types.Transaction{}
+
+// testNetGenesisMerkleRoot is the hash of the first transaction in the genesis block
+// for the test network.
+var testPowNetGenesisMerkleRoot = testPowNetGenesisCoinbaseTx.TxHashFull()
+
+// testNetGenesisBlock defines the genesis block of the block chain which
+// serves as the public transaction ledger for the test network (version 3).
+var testPowNetGenesisBlock = types.Block{
+	Header: types.BlockHeader{
+		Version:      4,
+		ParentRoot:   hash.Hash{},
+		TxRoot:       testPowNetGenesisMerkleRoot,
+		Timestamp:    time.Unix(1547735581, 0), // 2019-01-17 14:33:12 GMT
+		Difficulty:   0x207fffff,
+		Pow:&pow.Blake2bd{},
+	},
+	Transactions: []*types.Transaction{&testPowNetGenesisCoinbaseTx},
+}
+// testNetGenesisHash is the hash of the first block in the block chain for the
+// test network.
+var testPowNetGenesisHash = testPowNetGenesisBlock.BlockHash()
+
 // PrivNet -------------------------------------------------------------------------
 
 var privNetGenesisCoinbaseTx = types.Transaction{

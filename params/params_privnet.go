@@ -7,10 +7,10 @@
 package params
 
 import (
-	"math"
-	"math/big"
 	"github.com/HalalChain/qitmeer-lib/common"
 	"github.com/HalalChain/qitmeer-lib/core/protocol"
+	"github.com/HalalChain/qitmeer-lib/core/types/pow"
+	"math/big"
 	"time"
 )
 
@@ -36,9 +36,16 @@ var PrivNetParams = Params{
 	GenesisBlock:             &privNetGenesisBlock,
 	GenesisHash:              &privNetGenesisHash,
 	PowLimit:                 privNetPowLimit,
-	PowLimitBits:             0x207fffff,
-	CuckooPowLimitBits:		  uint32(math.Pow(1,1)),
-	CuckooScale :			  1856,
+	PowConfig :&pow.PowConfig{
+		PowLimitBits:             0x207fffff,
+		Blake2bDPercent:          34,
+		CuckarooPercent:          33,
+		CuckatooPercent:          33,
+		CuckarooScale:            1856,
+		CuckatooScale:            1856,
+		CuckarooPowLimitBits:     1000,
+		CuckatooPowLimitBits:     1000,
+	},
 	ReduceMinDifficulty:      false,
 	MinDiffReductionTime:     0, // Does not apply since ReduceMinDifficulty false
 	GenerateSupported:        true,

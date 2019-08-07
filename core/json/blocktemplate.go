@@ -84,7 +84,8 @@ type GetBlockTemplateResult struct {
 	Blake2bDTarget string `json:"blake2bd_target,omitempty"`
 	CuckarooTarget         uint64 `json:"cuckaroo_target,omitempty"`
 	CuckatooTarget         uint64 `json:"cuckatoo_target,omitempty"`
-	CuckooScale         uint64 `json:"cuckoo_scale,omitempty"`
+	CuckarooScale         uint64 `json:"cuckaroo_scale,omitempty"`
+	CuckatooScale         uint64 `json:"cuckatoo_scale,omitempty"`
 	Expires        int64  `json:"expires,omitempty"`
 
 	// Mutations from BIP 0023.

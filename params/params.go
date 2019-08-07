@@ -7,6 +7,7 @@ package params
 
 import (
 	"errors"
+	"github.com/HalalChain/qitmeer-lib/core/types/pow"
 	"math/big"
 	"time"
 	"github.com/HalalChain/qitmeer-lib/core/types"
@@ -102,14 +103,7 @@ type Params struct {
 	// as a uint256.
 	PowLimit *big.Int
 
-	// PowLimitBits defines the highest allowed proof of work value for a
-	// block in compact form.
-	PowLimitBits uint32
-
-	// Cuckoo PowLimitBits defines the highest allowed proof of work value for a
-	// block in compact form.
-	CuckooPowLimitBits uint32
-	CuckooScale uint64
+	PowConfig *pow.PowConfig
 
 	// WorkDiffAlpha is the stake difficulty EMA calculation alpha (smoothing)
 	// value. It is different from a normal EMA alpha. Closer to 1 --> smoother.

@@ -7,11 +7,11 @@
 package params
 
 import (
-	"math"
-	"time"
-	"math/big"
 	"github.com/HalalChain/qitmeer-lib/common"
 	"github.com/HalalChain/qitmeer-lib/core/protocol"
+	"github.com/HalalChain/qitmeer-lib/core/types/pow"
+	"math/big"
+	"time"
 )
 
 // mainPowLimit is the highest proof of work value a block can
@@ -33,9 +33,16 @@ var MainNetParams = Params{
 	GenesisBlock:             &genesisBlock,
 	GenesisHash:              &genesisHash,
 	PowLimit:                 mainPowLimit,
-	PowLimitBits:             0x1d00ffff,
-	CuckooPowLimitBits:		  uint32(math.Pow(10,5)),
-	CuckooScale :			  1856,
+	PowConfig :&pow.PowConfig{
+		PowLimitBits:             0x1d00ffff,
+		Blake2bDPercent:          100,
+		CuckarooPercent:          0,
+		CuckatooPercent:          0,
+		CuckarooScale:            1856,
+		CuckatooScale:            1856,
+		CuckarooPowLimitBits:     1000,
+		CuckatooPowLimitBits:     1000,
+	},
 	ReduceMinDifficulty:      false,
 	MinDiffReductionTime:     0, // Does not apply since ReduceMinDifficulty false
 	GenerateSupported:        false,

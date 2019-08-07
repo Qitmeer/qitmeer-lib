@@ -35,22 +35,22 @@ func (this *Cuckaroo) Verify(headerWithoutProofData []byte,targetDiff uint64) er
 	return nil
 }
 
-func (this *Cuckaroo) GetMinDiff(env int) uint64{
-	//env 0 private 1 test 2 main
-	return 1000
-}
-
-func (this *Cuckaroo) GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int,currentPowPercent *big.Int) *big.Int{
+func (this *Cuckaroo) GetNextDiffBig(weightedSumDiv *big.Int,oldDiffBig *big.Int,currentPowPercent *big.Int,param *PowConfig) *big.Int{
 	nextDiffBig := oldDiffBig.Div(oldDiffBig, weightedSumDiv)
-	if currentPowPercent.Cmp(this.GetPercent()) > 0{
-		currentPowPercent.Div(currentPowPercent,this.GetPercent())
+	targetPercent := this.PowPercent(param)
+	if currentPowPercent.Cmp(targetPercent) > 0{
+		currentPowPercent.Div(currentPowPercent,targetPercent)
 		nextDiffBig.Mul(nextDiffBig,currentPowPercent)
 	}
 	return nextDiffBig
 }
 
-func (this *Cuckaroo) GetPercent() *big.Int{
-	percent := big.NewInt(33) // is 33% percent
-	percent.Lsh(percent,32)
-	return percent
+func (this *Cuckaroo) PowPercent(param *PowConfig) *big.Int{
+	targetPercent := big.NewInt(int64(param.CuckarooPercent))
+	targetPercent.Lsh(targetPercent,32)
+	return targetPercent
+}
+
+func (this *Cuckaroo) GetMinDiff(param *PowConfig) uint64{
+	return uint64(param.CuckarooPowLimitBits)
 }

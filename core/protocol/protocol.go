@@ -33,6 +33,9 @@ const (
 	// TestNet2 represents the test network.
 	TestNet Network = 0x35e0c424
 
+	// TestPowNet represents the test network.
+	TestPowNet Network = 0x2c40408c
+
 	// PrivNet represents the private test network.
 	PrivNet Network = 0xf1eb0001
 )
@@ -43,6 +46,7 @@ var bnStrings = map[Network]string{
 	MainNet:  "MainNet",
 	TestNet:  "TestNet",
 	PrivNet:  "PirvNet",
+	TestPowNet:  "TestPowNet",
 }
 
 // String returns the CurrencyNet in human-readable form.

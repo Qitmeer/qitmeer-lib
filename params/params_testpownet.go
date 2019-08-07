@@ -14,38 +14,39 @@ import (
 	"time"
 )
 
-// testNetPowLimit is the highest proof of work value a block can
+// testPowNetPowLimit is the highest proof of work value a block can
 // have for the test network. It is the value 2^232 - 1.
-var	testNetPowLimit = new(big.Int).Sub(new(big.Int).Lsh(common.Big1, 232), common.Big1)
+var	testPowNetPowLimit = new(big.Int).Sub(new(big.Int).Lsh(common.Big1, 255), common.Big1)
 
-// TestNetParams defines the network parameters for the test network.
-var TestNetParams = Params{
-	Name:        "testnet",
-	Net:         protocol.TestNet,
-	DefaultPort: "18130",
+// testPowNetParams defines the network parameters for the test network.
+var TestPowNetParams = Params{
+	Name:        "testPowNet",
+	Net:         protocol.TestPowNet,
+	DefaultPort: "18132",
 	DNSSeeds: []DNSSeed{
-		//{"testnet-seed.hlcwallet.info", true},
-		//{"testnet-seed.qitmeer.xyz", true},
-		//{"testnet-seed.qitmeer.top", true},
+		//{"testPowNet-seed.hlcwallet.info", true},
+		//		//{"testPowNet-seed.qitmeer.xyz", true},
+		//		//{"testPowNet-seed.qitmeer.top", true},
 	},
 
 	// Chain parameters
-	GenesisBlock:             &testNetGenesisBlock,
-	GenesisHash:              &testNetGenesisHash,
-	PowLimit:                 testNetPowLimit,
-	PowConfig :&pow.PowConfig{
-		PowLimitBits:             0x1e00ffff,
-		Blake2bDPercent:          100,
-		CuckarooPercent:          0,
-		CuckatooPercent:          0,
-		CuckarooScale:            1856,
-		CuckatooScale:            1856,
-		CuckarooPowLimitBits:     1000,
-		CuckatooPowLimitBits:     1000,
-	},
+	GenesisBlock:             &testPowNetGenesisBlock,
+	GenesisHash:              &testPowNetGenesisHash,
+	PowLimit:                 testPowNetPowLimit,
 	ReduceMinDifficulty:      false,
 	MinDiffReductionTime:     0, // Does not apply since ReduceMinDifficulty false
 	GenerateSupported:        true,
+	PowConfig :&pow.PowConfig{
+		PowLimitBits:             0x207fffff,
+		Blake2bDPercent:          34,
+		CuckarooPercent:          33,
+		CuckatooPercent:          33,
+		CuckarooScale:            1856,
+		CuckatooScale:            1856,
+		CuckarooPowLimitBits:     2000,
+		CuckatooPowLimitBits:     5000,
+	},
+
 	WorkDiffAlpha:            1,
 	WorkDiffWindowSize:       144,
 	WorkDiffWindows:          20,
