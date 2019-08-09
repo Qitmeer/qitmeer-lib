@@ -55,8 +55,6 @@ type GetBlockTemplateResult struct {
 	// Base fields from BIP 0022.  CoinbaseAux is optional.  One of
 	// CoinbaseTxn or CoinbaseValue must be specified, but not both.
 	Blake2bDBits          string                     `json:"blake2bd_bits"`
-	CuckarooBits          string                     `json:"cuckaroo_bits"`
-	CuckatooBits          string                     `json:"cuckatoo_bits"`
 	StateRoot     string                     `json:"stateroot"`
 	CurTime       int64                      `json:"curtime"`
 	Height        int64                      `json:"height"`

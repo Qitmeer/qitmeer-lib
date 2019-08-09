@@ -36,7 +36,7 @@ func TestCuckooMining(t *testing.T) {
 		if !isFound {
 			continue
 		}
-		if err := VerifyCuckaroo(siphashKey[:16], cycleNonces); err != nil {
+		if err := VerifyCuckaroo(siphashKey[:16], cycleNonces,Edgebits); err != nil {
 			continue
 		}
 		cycleNoncesHash := hash.DoubleHashB(Uint32ToBytes(cycleNonces))

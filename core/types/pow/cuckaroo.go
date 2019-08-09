@@ -20,10 +20,15 @@ type Cuckaroo struct {
 	Cuckoo
 }
 
+const MIN_CUCKAROOEDGEBITS = 24
 func (this *Cuckaroo) Verify(headerWithoutProofData []byte,targetDiff uint64) error{
 	h := hash.HashH(headerWithoutProofData)
 	nonces := this.GetCircleNonces()
-	err := cuckoo.VerifyCuckaroo(h[:],nonces[:])
+	edgeBits := this.GetEdgeBits()
+	if edgeBits < MIN_CUCKAROOEDGEBITS{
+		return errors.New(fmt.Sprintf("edge bits:%d is too short! less than %d",edgeBits,MIN_CUCKAROOEDGEBITS))
+	}
+	err := cuckoo.VerifyCuckaroo(h[:],nonces[:],uint(edgeBits))
 	if err != nil{
 		log.Debug("Verify Error!",err)
 		return err

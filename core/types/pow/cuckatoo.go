@@ -5,6 +5,7 @@ import (
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 	"github.com/HalalChain/qitmeer-lib/crypto/cuckoo"
 	"github.com/HalalChain/qitmeer-lib/log"
+	"golang.org/x/exp/errors/fmt"
 	"math/big"
 )
 
@@ -12,10 +13,16 @@ type Cuckatoo struct {
 	Cuckoo
 }
 
+const MIN_CUCKATOOEDGEBITS = 29
+
 func (this *Cuckatoo) Verify(headerWithoutProofData []byte,targetDiff uint64) error{
 	h := hash.HashH(headerWithoutProofData)
 	nonces := this.GetCircleNonces()
-	err := cuckoo.VerifyCuckatoo(h[:],nonces[:])
+	edgeBits := this.GetEdgeBits()
+	if edgeBits < MIN_CUCKATOOEDGEBITS{
+		return errors.New(fmt.Sprintf("edge bits:%d is too short!less than %d",edgeBits,MIN_CUCKATOOEDGEBITS))
+	}
+	err := cuckoo.VerifyCuckatoo(h[:],nonces[:],uint(edgeBits))
 	if err != nil{
 		log.Debug("Verify Error!",err)
 		return err

@@ -163,7 +163,11 @@ func (c *Cuckoo) PoW(siphashKey []byte) ([]uint32, bool) {
 }
 
 //Verify cuckoo nonces.
-func VerifyCuckaroo(sipkey []byte, nonces []uint32) error {
+func VerifyCuckaroo(sipkey []byte, nonces []uint32,edgeBits uint) error {
+	nedge     := (1 << edgeBits)    //number of edges：
+	nnode     := 2 * nedge        //
+	easiness  := uint32(nnode * 50 / 100) //
+	edgemask  := uint64(nedge - 1)
 	sip := siphash.Newsip(sipkey)
 	var uvs [2 * ProofSize]uint32
 	var xor0, xor1 uint32
@@ -172,7 +176,7 @@ func VerifyCuckaroo(sipkey []byte, nonces []uint32) error {
 		return errors.New("length of nonce is not correct")
 	}
 
-	if nonces[ProofSize-1] > Easiness {
+	if nonces[ProofSize-1] > easiness {
 		return errors.New("nonce is too big")
 	}
 
