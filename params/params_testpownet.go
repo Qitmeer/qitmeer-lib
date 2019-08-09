@@ -44,7 +44,7 @@ var TestPowNetParams = Params{
 		CuckarooScale:            1856,
 		CuckatooScale:            1856,
 		CuckarooPowLimitBits:     2000,
-		CuckatooPowLimitBits:     5000,
+		CuckatooPowLimitBits:     1000,
 	},
 
 	WorkDiffAlpha:            1,

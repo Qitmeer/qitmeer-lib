@@ -17,14 +17,8 @@ const (
 	BLAKE2BD PowType = 0
 	CUCKAROO PowType = 1
 	CUCKATOO PowType = 2
-
-	POW_TYPE_START = 128
-	POW_TYPE_END = 132
-	POW_START = 120
-	POW_END = 328
-
-	DIFF_START = 100
-	DIFF_END = 104
+	POW_TYPE_START = 0
+	POW_TYPE_END = 4
 )
 
 var PowMapString = map[PowType]interface{}{
@@ -91,6 +85,7 @@ func (this *Pow)Bytes() PowBytes {
 	return PowBytes(r)
 }
 
+//get pow instance
 func GetInstance (powType PowType,nonce uint64,proofData []byte) IPow {
 	var instance IPow
 	switch powType {
@@ -110,11 +105,11 @@ func GetInstance (powType PowType,nonce uint64,proofData []byte) IPow {
 }
 
 func (this *Pow) SetPowType (powType PowType) {
-	binary.LittleEndian.PutUint32(this.ProofData[:4],uint32(powType))
+	binary.LittleEndian.PutUint32(this.ProofData[POW_TYPE_START:POW_TYPE_END],uint32(powType))
 }
 
 func (this *Pow) GetPowType () PowType {
-	return PowType(binary.LittleEndian.Uint32(this.ProofData[:4]))
+	return PowType(binary.LittleEndian.Uint32(this.ProofData[POW_TYPE_START:POW_TYPE_END]))
 }
 
 func (this *Pow) GetNonce () uint64 {
@@ -132,5 +127,5 @@ func (this *Pow) GetProofData () string {
 //set proof data except pow type
 func (this *Pow) SetProofData (data []byte) {
 	l := len(data)
-	copy(this.ProofData[4:l+4],data[:])
+	copy(this.ProofData[POW_TYPE_END:l+POW_TYPE_END],data[:])
 }

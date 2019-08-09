@@ -53,7 +53,6 @@ func VerifyCuckatoo(sipkey []byte, nonces []uint32,edgeBits uint) error {
 		log.Println(xor1)
 		return errors.New("V endpoinsts don't match")
 	}
-	log.Println(uvs,"===",len(uvs))
 	n := 0
 	for i := 0; ; {
 		another := i

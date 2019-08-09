@@ -14,9 +14,16 @@ type Cuckoo struct {
 	Pow
 }
 
+const (
+	PROOF_DATA_EDGE_BITS_START = 4
+	PROOF_DATA_EDGE_BITS_END = 8
+	PROOF_DATA_EDGE_SCALE_START = 8
+	PROOF_DATA_EDGE_SCALE_END = 12
+)
+
 // set edge bits
 func (this *Cuckoo) SetEdgeBits (edge_bits uint32) {
-	binary.LittleEndian.PutUint32(this.ProofData[4:8],uint32(edge_bits))
+	binary.LittleEndian.PutUint32(this.ProofData[PROOF_DATA_EDGE_BITS_START:PROOF_DATA_EDGE_BITS_END],uint32(edge_bits))
 }
 
 // get edge bits
@@ -29,7 +36,7 @@ func (this *Cuckoo) SetCircleEdges (edges []uint32) {
 	for i:=0 ;i<len(edges);i++{
 		b := make([]byte,4)
 		binary.LittleEndian.PutUint32(b,edges[i])
-		copy(this.ProofData[(i*4)+12:(i*4)+16],b)
+		copy(this.ProofData[(i*4)+PROOF_DATA_EDGE_SCALE_END:(i*4)+PROOF_DATA_EDGE_SCALE_END+4],b)
 	}
 }
 
@@ -46,12 +53,12 @@ func (this *Cuckoo) GetCircleNonces () (nonces [cuckoo.ProofSize]uint32) {
 
 // set scale ,the diff scale of circle
 func (this *Cuckoo) SetScale (scale uint32) {
-	binary.LittleEndian.PutUint32(this.ProofData[8:12],uint32(scale))
+	binary.LittleEndian.PutUint32(this.ProofData[PROOF_DATA_EDGE_SCALE_START:PROOF_DATA_EDGE_SCALE_END],uint32(scale))
 }
 
 //get scale ,the diff scale of circle
 func (this *Cuckoo) GetScale () int64 {
-	return int64(binary.LittleEndian.Uint32(this.ProofData[8:12]))
+	return int64(binary.LittleEndian.Uint32(this.ProofData[PROOF_DATA_EDGE_SCALE_START:PROOF_DATA_EDGE_SCALE_END]))
 }
 
 func (this *Cuckoo)GetBlockHash (data []byte) hash.Hash {
@@ -68,7 +75,7 @@ func (this *Cuckoo)CuckooHash(nonces []uint64,nonce_bits int) hash.Hash {
 	sort.Slice(nonces, func(i, j int) bool {
 		return nonces[i] < nonces[j]
 	})
-	bitvec,_ := util.New(nonce_bits*42)
+	bitvec,_ := util.New(nonce_bits*cuckoo.ProofSize)
 	for i:=41;i>=0;i--{
 		n := i
 		nonce := nonces[i]
