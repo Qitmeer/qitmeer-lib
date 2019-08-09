@@ -24,9 +24,9 @@ var TestPowNetParams = Params{
 	Net:         protocol.TestPowNet,
 	DefaultPort: "18132",
 	DNSSeeds: []DNSSeed{
-		//{"testPowNet-seed.hlcwallet.info", true},
-		//		//{"testPowNet-seed.qitmeer.xyz", true},
-		//		//{"testPowNet-seed.qitmeer.top", true},
+		{"testPowNet-seed.hlcwallet.info", true},
+				//{"testPowNet-seed.qitmeer.xyz", true},
+				//{"testPowNet-seed.qitmeer.top", true},
 	},
 
 	// Chain parameters
