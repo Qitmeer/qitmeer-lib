@@ -26,14 +26,13 @@ func (this *Cuckaroo) Verify(headerWithoutProofData []byte,targetDiff uint64) er
 	nonces := this.GetCircleNonces()
 	edgeBits := this.GetEdgeBits()
 	if edgeBits < MIN_CUCKAROOEDGEBITS{
-		return errors.New(fmt.Sprintf("edge bits:%d is too short! less than %d",edgeBits,MIN_CUCKAROOEDGEBITS))
+		return fmt.Errorf("edge bits:%d is too short! less than %d",edgeBits,MIN_CUCKAROOEDGEBITS)
 	}
 	err := cuckoo.VerifyCuckaroo(h[:],nonces[:],uint(edgeBits))
 	if err != nil{
 		log.Debug("Verify Error!",err)
 		return err
 	}
-	fmt.Println(fmt.Sprintf("===================target difficulty:%d",targetDiff))
 	if this.CalcCuckooDiff(this.GetScale(),this.GetBlockHash([]byte{})) < targetDiff{
 		return errors.New("difficulty is too easy!")
 	}

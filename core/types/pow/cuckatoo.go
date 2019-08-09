@@ -20,7 +20,7 @@ func (this *Cuckatoo) Verify(headerWithoutProofData []byte,targetDiff uint64) er
 	nonces := this.GetCircleNonces()
 	edgeBits := this.GetEdgeBits()
 	if edgeBits < MIN_CUCKATOOEDGEBITS{
-		return errors.New(fmt.Sprintf("edge bits:%d is too short!less than %d",edgeBits,MIN_CUCKATOOEDGEBITS))
+		return fmt.Errorf("edge bits:%d is too short!less than %d",edgeBits,MIN_CUCKATOOEDGEBITS)
 	}
 	err := cuckoo.VerifyCuckatoo(h[:],nonces[:],uint(edgeBits))
 	if err != nil{

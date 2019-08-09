@@ -3,7 +3,6 @@ package serialization
 
 import (
 	"encoding/binary"
-	"errors"
 	"fmt"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 	"github.com/HalalChain/qitmeer-lib/core/protocol"
@@ -166,7 +165,7 @@ func readElement(r io.Reader, element interface{}) error {
 		typeEnd := pow.POW_LENGTH-pow.PROOFDATA_LENGTH + pow.POW_TYPE_END
 		powType := pow.PowType(littleEndian.Uint32(b[typeStart:typeEnd]))
 		if _,ok := pow.PowMapString[powType];!ok{
-			return errors.New(fmt.Sprintf("powType:%d don't supported!",powType))
+			return fmt.Errorf("powType:%d don't supported!",powType)
 		}
 		//set pow type 4 bytes nonce 8 bytes and proof data except types
 		*e = pow.GetInstance(powType,littleEndian.Uint64(b[0:typeStart]),b[typeEnd:pow.POW_LENGTH])
