@@ -130,7 +130,7 @@ var testPowNetGenesisBlock = types.Block{
 		ParentRoot:   hash.Hash{},
 		TxRoot:       testPowNetGenesisMerkleRoot,
 		Timestamp:    time.Unix(1547735581, 0), // 2019-01-17 14:33:12 GMT
-		Difficulty:   0x207fffff,
+		Difficulty:   0x1e00ffff,
 		Pow:&pow.Blake2bd{},
 	},
 	Transactions: []*types.Transaction{&testPowNetGenesisCoinbaseTx},
