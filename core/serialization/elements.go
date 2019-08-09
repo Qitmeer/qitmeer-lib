@@ -157,17 +157,19 @@ func readElement(r io.Reader, element interface{}) error {
 
 	case *pow.IPow:
 		//pow
-		b := make([]byte,208)
+		b := make([]byte,pow.POW_LENGTH)
 		_, err := io.ReadFull(r,b)
 		if err != nil {
 			return err
 		}
-		powType := pow.PowType(littleEndian.Uint32(b[8:12]))
+		typeStart := pow.POW_LENGTH-pow.PROOFDATA_LENGTH
+		typeEnd := pow.POW_LENGTH-pow.PROOFDATA_LENGTH + pow.POW_TYPE_END
+		powType := pow.PowType(littleEndian.Uint32(b[typeStart:typeEnd]))
 		if _,ok := pow.PowMapString[powType];!ok{
 			return errors.New(fmt.Sprintf("powType:%d don't supported!",powType))
 		}
 		//set pow type 4 bytes nonce 8 bytes and proof data except types
-		*e = pow.GetInstance(powType,littleEndian.Uint64(b[0:8]),b[12:208])
+		*e = pow.GetInstance(powType,littleEndian.Uint64(b[0:typeStart]),b[typeEnd:pow.POW_LENGTH])
 		return nil
 	}
 
