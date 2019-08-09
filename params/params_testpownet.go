@@ -25,8 +25,8 @@ var TestPowNetParams = Params{
 	DefaultPort: "18132",
 	DNSSeeds: []DNSSeed{
 		{"testPowNet-seed.hlcwallet.info", true},
-				//{"testPowNet-seed.qitmeer.xyz", true},
-				//{"testPowNet-seed.qitmeer.top", true},
+		{"testPowNet-seed.qitmeer.xyz", true},
+		{"testPowNet-seed.qitmeer.top", true},
 	},
 
 	// Chain parameters
@@ -43,7 +43,7 @@ var TestPowNetParams = Params{
 		CuckatooPercent:          33,
 		CuckarooScale:            1856,
 		CuckatooScale:            1856,
-		CuckarooPowLimitBits:     2000,
+		CuckarooPowLimitBits:     1000,
 		CuckatooPowLimitBits:     1000,
 	},
 
