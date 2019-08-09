@@ -2,10 +2,10 @@ package pow
 
 import (
 	"errors"
+	"fmt"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 	"github.com/HalalChain/qitmeer-lib/crypto/cuckoo"
 	"github.com/HalalChain/qitmeer-lib/log"
-	"golang.org/x/exp/errors/fmt"
 	"math/big"
 )
 
