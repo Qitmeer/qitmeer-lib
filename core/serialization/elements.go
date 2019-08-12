@@ -263,22 +263,8 @@ func writeElement(w io.Writer, element interface{}) error {
 			return err
 		}
 		return nil
-	case *pow.Blake2bd:
-		b := e.Bytes()
-		_, err := w.Write(b[:])
-		if err != nil {
-			return err
-		}
-		return nil
-	case *pow.Cuckaroo:
-		b := e.Bytes()
-		_, err := w.Write(b[:])
-		if err != nil {
-			return err
-		}
-		return nil
-	case *pow.Cuckatoo:
-		b := e.Bytes()
+	case *pow.IPow:
+		b := (*e).Bytes()
 		_, err := w.Write(b[:])
 		if err != nil {
 			return err

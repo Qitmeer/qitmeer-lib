@@ -15,9 +15,9 @@ import (
 
 // MaxBlockHeaderPayload is the maximum number of bytes a block header can be.
 // Version 4 bytes + ParentRoot 32 bytes + TxRoot 32 bytes + StateRoot 32 bytes
-// Difficulty 4 bytes   + Timestamp 8 bytes + Nonce 8 bytes +ExNonce 8 bytes + circle nonces 80
+// Difficulty 4 bytes   + Timestamp 8 bytes + Nonce 8 bytes +circle nonces 80
 // --> Total 208 bytes.
-const MaxBlockHeaderPayload = 4 + (hash.HashSize * 3) + 4 + 8 + 8 + 208
+const MaxBlockHeaderPayload = 4 + (hash.HashSize * 3) + 4 + 8 + 208
 
 // MaxBlockPayload is the maximum bytes a block message can be in bytes.
 const MaxBlockPayload = 1048576 // 1024*1024 (1MB)
@@ -31,7 +31,7 @@ const MaxParentsPerBlock=50
 
 // blockHeaderLen is a constant that represents the number of bytes for a block
 // header.
-const blockHeaderLen = 328
+const blockHeaderLen = 320
 
 // MaxBlocksPerMsg is the maximum number of blocks allowed per message.
 const MaxBlocksPerMsg = 500
@@ -68,9 +68,6 @@ type BlockHeader struct {
 
 	// Difficulty
 	Difficulty     uint32
-
-	// extra nonce for miner
-	ExNonce     uint64
 
 	// TimeStamp
 	Timestamp   time.Time
@@ -110,7 +107,7 @@ func (h *BlockHeader) BlockData() []byte {
 func readBlockHeader(r io.Reader,pver uint32, bh *BlockHeader) error {
 	// TODO fix time ambiguous
 	return s.ReadElements(r, &bh.Version, &bh.ParentRoot, &bh.TxRoot,
-		&bh.StateRoot, &bh.Difficulty, &bh.ExNonce, (*s.Int64Time)(&bh.Timestamp),
+		&bh.StateRoot, &bh.Difficulty, (*s.Int64Time)(&bh.Timestamp),
 		&bh.Pow)
 }
 
@@ -122,7 +119,7 @@ func writeBlockHeader(w io.Writer, pver uint32, bh *BlockHeader) error {
 	// TODO fix time ambiguous
 	sec := bh.Timestamp.Unix()
 	return s.WriteElements(w, bh.Version, &bh.ParentRoot, &bh.TxRoot,
-		&bh.StateRoot,bh.Difficulty, bh.ExNonce, sec, bh.Pow)
+		&bh.StateRoot,bh.Difficulty, sec, &bh.Pow)
 }
 
 // write header data without proof data
@@ -130,7 +127,7 @@ func writeBlockHeaderWithoutProofData(w io.Writer, pver uint32, bh *BlockHeader)
 	// TODO fix time ambiguous
 	sec := bh.Timestamp.Unix()
 	return s.WriteElements(w, bh.Version, &bh.ParentRoot, &bh.TxRoot,
-		&bh.StateRoot,bh.Difficulty, bh.ExNonce, sec, bh.Pow.GetNonce())
+		&bh.StateRoot,bh.Difficulty, sec, bh.Pow.GetNonce())
 }
 
 // This function get the simple hash use each parents string, so it can't use to
