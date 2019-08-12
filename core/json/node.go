@@ -4,7 +4,7 @@ package json
 type InfoNodeResult struct {
 	Version         int32   `json:"version"`
 	ProtocolVersion int32   `json:"protocolversion"`
-	Blocks          uint32   `json:"blocks"`
+	GraphState      GetGraphStateResult `json:"graphstate"`
 	TimeOffset      int64   `json:"timeoffset"`
 	Connections     int32   `json:"connections"`
 	Blake2bDDifficulty      float64 `json:"blake2bd_difficulty"`
