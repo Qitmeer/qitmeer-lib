@@ -151,8 +151,5 @@ func (this *Pow) SetProofData (data []byte) {
 
 //check pow is available
 func (this *Pow) CheckAvailable (powPercent *big.Int) bool {
-	if powPercent.Cmp(big.NewInt(0)) <=0 {
-		return false
-	}
-	return true
+	return powPercent.Cmp(big.NewInt(0)) <=0
 }
