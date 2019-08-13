@@ -10,7 +10,7 @@ import (
 // proof data length 204
 const POW_LENGTH = 208
 const PROOFDATA_LENGTH = 200
-type PowType int
+type PowType byte
 type PowBytes [POW_LENGTH]byte
 
 const (
@@ -18,7 +18,7 @@ const (
 	CUCKAROO PowType = 1
 	CUCKATOO PowType = 2
 	POW_TYPE_START = 0
-	POW_TYPE_END = 4
+	POW_TYPE_END = 1
 )
 
 var PowMapString = map[PowType]interface{}{
@@ -105,11 +105,11 @@ func GetInstance (powType PowType,nonce uint64,proofData []byte) IPow {
 }
 
 func (this *Pow) SetPowType (powType PowType) {
-	binary.LittleEndian.PutUint32(this.ProofData[POW_TYPE_START:POW_TYPE_END],uint32(powType))
+	copy(this.ProofData[POW_TYPE_START:POW_TYPE_END],[]byte{uint8(powType)})
 }
 
 func (this *Pow) GetPowType () PowType {
-	return PowType(binary.LittleEndian.Uint32(this.ProofData[POW_TYPE_START:POW_TYPE_END]))
+	return PowType(this.ProofData[POW_TYPE_START:POW_TYPE_END][0])
 }
 
 func (this *Pow) GetNonce () uint64 {

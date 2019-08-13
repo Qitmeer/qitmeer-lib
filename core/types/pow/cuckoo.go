@@ -15,10 +15,11 @@ type Cuckoo struct {
 }
 
 const (
-	PROOF_DATA_EDGE_BITS_START = 4
-	PROOF_DATA_EDGE_BITS_END = 8
-	PROOF_DATA_EDGE_SCALE_START = 8
-	PROOF_DATA_EDGE_SCALE_END = 12
+	PROOF_DATA_EDGE_BITS_START = 1
+	PROOF_DATA_EDGE_BITS_END = 5
+	PROOF_DATA_EDGE_SCALE_START = 5
+	PROOF_DATA_EDGE_SCALE_END = 9
+	PROOF_DATA_CIRCLE_NONCE_END = 177
 )
 
 // set edge bits
@@ -28,7 +29,7 @@ func (this *Cuckoo) SetEdgeBits (edge_bits uint32) {
 
 // get edge bits
 func (this *Cuckoo) GetEdgeBits () uint32 {
-	return binary.LittleEndian.Uint32(this.ProofData[EDGE_BITS_START:EDGE_BITS_END])
+	return binary.LittleEndian.Uint32(this.ProofData[PROOF_DATA_EDGE_BITS_START:PROOF_DATA_EDGE_BITS_END])
 }
 
 // set edge circles
@@ -43,7 +44,7 @@ func (this *Cuckoo) SetCircleEdges (edges []uint32) {
 func (this *Cuckoo) GetCircleNonces () (nonces [cuckoo.ProofSize]uint32) {
 	nonces = [cuckoo.ProofSize]uint32{}
 	j := 0
-	for i :=CIRCLE_NONCE_START;i<CIRCLE_NONCE_END;i+=4{
+	for i :=PROOF_DATA_EDGE_SCALE_END;i<PROOF_DATA_CIRCLE_NONCE_END;i+=4{
 		nonceBytes := this.ProofData[i:i+4]
 		nonces[j] = binary.LittleEndian.Uint32(nonceBytes)
 		j++

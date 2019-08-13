@@ -163,7 +163,7 @@ func readElement(r io.Reader, element interface{}) error {
 		}
 		typeStart := pow.POW_LENGTH-pow.PROOFDATA_LENGTH
 		typeEnd := pow.POW_LENGTH-pow.PROOFDATA_LENGTH + pow.POW_TYPE_END
-		powType := pow.PowType(littleEndian.Uint32(b[typeStart:typeEnd]))
+		powType := pow.PowType(b[typeStart:typeEnd][0])
 		if _,ok := pow.PowMapString[powType];!ok{
 			return fmt.Errorf("powType:%d don't supported!",powType)
 		}

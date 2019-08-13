@@ -9,13 +9,6 @@ import (
 	"math/big"
 )
 
-const (
-	EDGE_BITS_START = 4
-	EDGE_BITS_END = 8
-	CIRCLE_NONCE_START = 12
-	CIRCLE_NONCE_END = 180
-)
-
 type Cuckaroo struct {
 	Cuckoo
 }
