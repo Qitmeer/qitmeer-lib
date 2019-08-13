@@ -16,7 +16,7 @@ import (
 
 // testPowNetPowLimit is the highest proof of work value a block can
 // have for the test network. It is the value 2^232 - 1.
-var	testPowNetPowLimit = new(big.Int).Sub(new(big.Int).Lsh(common.Big1, 255), common.Big1)
+var	testPowNetPowLimit = new(big.Int).Sub(new(big.Int).Lsh(common.Big1, 232), common.Big1)
 
 // testPowNetParams defines the network parameters for the test network.
 var TestPowNetParams = Params{
@@ -32,19 +32,19 @@ var TestPowNetParams = Params{
 	// Chain parameters
 	GenesisBlock:             &testPowNetGenesisBlock,
 	GenesisHash:              &testPowNetGenesisHash,
-	PowLimit:                 testPowNetPowLimit,
 	ReduceMinDifficulty:      false,
 	MinDiffReductionTime:     0, // Does not apply since ReduceMinDifficulty false
 	GenerateSupported:        true,
 	PowConfig :&pow.PowConfig{
-		PowLimitBits:             0x207fffff,
+		Blake2bdPowLimit:                 testPowNetPowLimit,
+		Blake2bdPowLimitBits:             0x1e00ffff,
 		Blake2bDPercent:          34,
 		CuckarooPercent:          33,
 		CuckatooPercent:          33,
-		CuckarooScale:            1856,
-		CuckatooScale:            1856,
-		CuckarooPowLimitBits:     1000,
-		CuckatooPowLimitBits:     1000,
+		CuckarooDiffScale:            1856,
+		CuckatooDiffScale:            1856,
+		CuckarooMinDifficulty:     1000,
+		CuckatooMinDifficulty:     1000,
 	},
 
 	WorkDiffAlpha:            1,

@@ -161,14 +161,12 @@ func readElement(r io.Reader, element interface{}) error {
 		if err != nil {
 			return err
 		}
-		typeStart := pow.POW_LENGTH-pow.PROOFDATA_LENGTH
-		typeEnd := pow.POW_LENGTH-pow.PROOFDATA_LENGTH + pow.POW_TYPE_END
-		powType := pow.PowType(b[typeStart:typeEnd][0])
+		powType := pow.PowType(littleEndian.Uint32(b[0:4]))
 		if _,ok := pow.PowMapString[powType];!ok{
 			return fmt.Errorf("powType:%d don't supported!",powType)
 		}
 		//set pow type 4 bytes nonce 8 bytes and proof data except types
-		*e = pow.GetInstance(powType,littleEndian.Uint64(b[0:typeStart]),b[typeEnd:pow.POW_LENGTH])
+		*e = pow.GetInstance(powType,littleEndian.Uint64(b[4:12]),b[12:pow.POW_LENGTH])
 		return nil
 	}
 
@@ -195,6 +193,13 @@ func writeElement(w io.Writer, element interface{}) error {
 	// type assertions first.
 	switch e := element.(type) {
 	case int32:
+		err := BinarySerializer.PutUint32(w, littleEndian, uint32(e))
+		if err != nil {
+			return err
+		}
+		return nil
+
+	case pow.PowType:
 		err := BinarySerializer.PutUint32(w, littleEndian, uint32(e))
 		if err != nil {
 			return err

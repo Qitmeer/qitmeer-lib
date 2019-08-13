@@ -50,11 +50,24 @@ type GetBlockTemplateResultAux struct {
 	Flags string `json:"flags"`
 }
 
+type PowDiffReference struct {
+	//blake2bd diff
+	Blake2bDifficulty uint64 `json:"blake2bd_diff"`
+	//blake2bd hash diff compare target
+	Blake2bTarget string `json:"blake2bd_target"`
+
+	//cuckoo mining min diff
+	CuckarooMinDiff         uint64 `json:"cuckaroo_min_diff,omitempty"`
+	CuckatooMinDiff         uint64 `json:"cuckatoo_min_diff,omitempty"`
+	//cuckoo hash calc diff scale 
+	CuckarooDiffScale         uint64 `json:"cuckaroo_diff_scale,omitempty"`
+	CuckatooDiffScale         uint64 `json:"cuckatoo_diff_scale,omitempty"`
+}
+
 // GetBlockTemplateResult models the data returned from the getblocktemplate
 type GetBlockTemplateResult struct {
 	// Base fields from BIP 0022.  CoinbaseAux is optional.  One of
 	// CoinbaseTxn or CoinbaseValue must be specified, but not both.
-	Blake2bDBits          string                     `json:"blake2bd_bits"`
 	StateRoot     string                     `json:"stateroot"`
 	CurTime       int64                      `json:"curtime"`
 	Height        int64                      `json:"height"`
@@ -78,12 +91,9 @@ type GetBlockTemplateResult struct {
 	LongPollURI string `json:"longpolluri,omitempty"`
 	SubmitOld   *bool  `json:"submitold,omitempty"`
 
+	PowDiffReference PowDiffReference `json:"pow_diff_reference"`
+
 	// Basic pool extension from BIP 0023.
-	Blake2bDTarget string `json:"blake2bd_target,omitempty"`
-	CuckarooTarget         uint64 `json:"cuckaroo_target,omitempty"`
-	CuckatooTarget         uint64 `json:"cuckatoo_target,omitempty"`
-	CuckarooScale         uint64 `json:"cuckaroo_scale,omitempty"`
-	CuckatooScale         uint64 `json:"cuckatoo_scale,omitempty"`
 	Expires        int64  `json:"expires,omitempty"`
 
 	// Mutations from BIP 0023.

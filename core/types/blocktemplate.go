@@ -1,5 +1,18 @@
 package types
 
+type PowDiffStandard struct {
+	//blake2b diff hash target
+	Blake2bDTarget uint64
+
+	//cuckoo base difficultuy
+	CuckarooBaseDiff uint64
+	CuckatooBaseDiff uint64
+
+	//cuckoo hash convert diff scale
+	CuckarooDiffScale uint64
+	CuckatooDiffScale uint64
+}
+
 // BlockTemplate houses a block that has yet to be solved along with additional
 // details about the fees and the number of signature operations for each
 // transaction in the block.
@@ -22,11 +35,9 @@ type BlockTemplate struct {
 	// Height is the height at which the block template connects to the main
 	// chain.
 	Height uint64
-	Blake2bDTarget uint64
-	CuckarooTarget uint64
-	CuckatooTarget uint64
-	CuckarooScale uint64
-	CuckatooScale uint64
+
+	//pow diff standard
+	PowDiffData PowDiffStandard
 
 	// ValidPayAddress indicates whether or not the template coinbase pays
 	// to an address or is redeemable by anyone.  See the documentation on

@@ -15,11 +15,11 @@ type Cuckoo struct {
 }
 
 const (
-	PROOF_DATA_EDGE_BITS_START = 1
-	PROOF_DATA_EDGE_BITS_END = 5
-	PROOF_DATA_EDGE_SCALE_START = 5
-	PROOF_DATA_EDGE_SCALE_END = 9
-	PROOF_DATA_CIRCLE_NONCE_END = 177
+	PROOF_DATA_EDGE_BITS_START = 0
+	PROOF_DATA_EDGE_BITS_END = 4
+	PROOF_DATA_EDGE_SCALE_START = 4
+	PROOF_DATA_EDGE_SCALE_END = 8
+	PROOF_DATA_CIRCLE_NONCE_END = 176
 )
 
 // set edge bits
@@ -92,7 +92,7 @@ func (this *Cuckoo)CuckooHash(nonces []uint64,nonce_bits int) hash.Hash {
 }
 
 //calc cuckoo diff
-func (this *Cuckoo)CalcCuckooDiff(scale int64,blockHash hash.Hash) uint64 {
+func CalcCuckooDiff(scale int64,blockHash hash.Hash) uint64 {
 	c := &big.Int{}
 	util.ReverseBytes(blockHash[:])
 	c.SetUint64(binary.BigEndian.Uint64(blockHash[:8]))

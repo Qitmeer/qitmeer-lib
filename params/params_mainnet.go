@@ -32,16 +32,17 @@ var MainNetParams = Params{
 	// Chain parameters
 	GenesisBlock:             &genesisBlock,
 	GenesisHash:              &genesisHash,
-	PowLimit:                 mainPowLimit,
+
 	PowConfig :&pow.PowConfig{
-		PowLimitBits:             0x1d00ffff,
+		Blake2bdPowLimit:                 mainPowLimit,
+		Blake2bdPowLimitBits:             0x1d00ffff,
 		Blake2bDPercent:          100,
 		CuckarooPercent:          0,
 		CuckatooPercent:          0,
-		CuckarooScale:            1856,
-		CuckatooScale:            1856,
-		CuckarooPowLimitBits:     1000,
-		CuckatooPowLimitBits:     1000,
+		CuckarooDiffScale:            1856,
+		CuckatooDiffScale:            1856,
+		CuckarooMinDifficulty:     1000,
+		CuckatooMinDifficulty:     1000,
 	},
 	ReduceMinDifficulty:      false,
 	MinDiffReductionTime:     0, // Does not apply since ReduceMinDifficulty false

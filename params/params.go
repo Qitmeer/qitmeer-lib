@@ -6,14 +6,13 @@
 package params
 
 import (
+	"encoding/hex"
 	"errors"
-	"github.com/HalalChain/qitmeer-lib/core/types/pow"
-	"math/big"
-	"time"
-	"github.com/HalalChain/qitmeer-lib/core/types"
 	"github.com/HalalChain/qitmeer-lib/common/hash"
 	"github.com/HalalChain/qitmeer-lib/core/protocol"
-	"encoding/hex"
+	"github.com/HalalChain/qitmeer-lib/core/types"
+	"github.com/HalalChain/qitmeer-lib/core/types/pow"
+	"time"
 )
 
 // CheckForDuplicateHashes checks for duplicate hashes when validating blocks.
@@ -98,10 +97,6 @@ type Params struct {
 
 	// GenesisHash is the starting block hash.
 	GenesisHash *hash.Hash
-
-	// PowLimit defines the highest allowed proof of work value for a block
-	// as a uint256.
-	PowLimit *big.Int
 
 	PowConfig *pow.PowConfig
 

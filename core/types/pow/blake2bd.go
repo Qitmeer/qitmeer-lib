@@ -11,7 +11,11 @@ type Blake2bd struct {
 	Pow
 }
 
-func (this *Blake2bd) Verify(headerWithoutProofData []byte,targetDiff uint64) error{
+func (this *Blake2bd) Verify(headerWithoutProofData []byte,targetDiff uint64,powConfig *PowConfig) error{
+	if !this.CheckAvailable(this.PowPercent(powConfig)){
+		str := fmt.Sprintf("blake2bd is not supported")
+		return errors.New(str)
+	}
 	target := CompactToBig(uint32(targetDiff))
 	if target.Sign() <= 0 {
 		str := fmt.Sprintf("block target difficulty of %064x is too "+
@@ -19,12 +23,12 @@ func (this *Blake2bd) Verify(headerWithoutProofData []byte,targetDiff uint64) er
 		return errors.New(str)
 	}
 
-	// The target difficulty must be less than the maximum allowed.
-	//if target.Cmp(powLimit) > 0 {
-	//	str := fmt.Sprintf("block target difficulty of %064x is "+
-	//		"higher than max of %064x", target, powLimit)
-	//	return errors.New(str)
-	//}
+	//The target difficulty must be less than the maximum allowed.
+	if target.Cmp(powConfig.Blake2bdPowLimit) > 0 {
+		str := fmt.Sprintf("block target difficulty of %064x is "+
+			"higher than max of %064x", target, powConfig.Blake2bdPowLimit)
+		return errors.New(str)
+	}
 	h := hash.DoubleHashH(headerWithoutProofData)
 	hashNum := HashToBig(&h)
 	if hashNum.Cmp(target) > 0 {
@@ -55,6 +59,17 @@ func (this *Blake2bd) PowPercent(param *PowConfig) *big.Int{
 	return targetPercent
 }
 
-func (this *Blake2bd) GetMinDiff(param *PowConfig) uint64{
-	return uint64(param.PowLimitBits)
+func (this *Blake2bd) GetSafeDiff(param *PowConfig,cur_reduce_diff uint64) uint64{
+	limitBits := uint64(param.Blake2bdPowLimitBits)
+	if cur_reduce_diff <= 0{
+		return limitBits
+	}
+	newTarget := &big.Int{}
+	newTarget = newTarget.SetUint64(cur_reduce_diff)
+	// Limit new value to the proof of work limit.
+	if newTarget.Cmp(param.Blake2bdPowLimit) > 0 {
+		newTarget.Set(param.Blake2bdPowLimit)
+	}
+
+	return uint64(BigToCompact(newTarget))
 }

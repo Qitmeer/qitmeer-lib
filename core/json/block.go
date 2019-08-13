@@ -34,7 +34,7 @@ type GetBlockHeaderVerboseResult struct {
 	ParentRoot    string  `json:"parentroot"`
 	TxRoot        string  `json:"txRoot"`
 	StateRoot     string  `json:"stateRoot"`
-	Difficulty    uint32  `json:"difficulty"`
+	Difficulty    uint64  `json:"difficulty"`
 	Layer         uint32  `json:"layer"`
 	Time          int64   `json:"time"`
 	Nonce         uint64  `json:"nonce"`
