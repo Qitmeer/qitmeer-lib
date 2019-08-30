@@ -7,11 +7,11 @@
 package params
 
 import (
-	"github.com/HalalChain/qitmeer-lib/common"
-	"github.com/HalalChain/qitmeer-lib/core/protocol"
-	"github.com/HalalChain/qitmeer-lib/core/types/pow"
-	"math/big"
+	"github.com/Qitmeer/qitmeer-lib/core/types/pow"
 	"time"
+	"math/big"
+	"github.com/Qitmeer/qitmeer-lib/common"
+	"github.com/Qitmeer/qitmeer-lib/core/protocol"
 )
 
 // mainPowLimit is the highest proof of work value a block can
@@ -93,4 +93,6 @@ var MainNetParams = Params{
 	HDCoinType: 223,
 
 	CoinbaseMaturity:        256,
+
+	OrganizationPkScript:  hexMustDecode("76a914c0f0b73c320e1fe38eb1166a57b953e509c8f93e88ac"),
 }

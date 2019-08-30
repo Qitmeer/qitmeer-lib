@@ -7,51 +7,42 @@
 package params
 
 import (
-	"github.com/HalalChain/qitmeer-lib/core/types/pow"
+	"github.com/Qitmeer/qitmeer-lib/common/hash"
+	"github.com/Qitmeer/qitmeer-lib/core/types"
+	"github.com/Qitmeer/qitmeer-lib/core/types/pow"
 	"time"
-	"github.com/HalalChain/qitmeer-lib/core/types"
-	"github.com/HalalChain/qitmeer-lib/common/hash"
 )
 
 // MainNet ------------------------------------------------------------------------
 
 // genesisCoinbaseTx is the coinbase transaction for the genesis blocks for
 // the main network.
-var genesisCoinbaseTx = types.Transaction{
-	Version: 1,
-	TxIn: []*types.TxInput{
-		{
-			// Fully null.
-			PreviousOut: types.TxOutPoint{
-				Hash:  hash.Hash{},
-				OutIndex: 0xffffffff,
-			},
-			SignScript: []byte{
-				0x00, 0x00,
-			},
-			BlockOrder:  types.NullBlockOrder,
-			TxIndex:     types.NullTxIndex,
-			AmountIn:    types.NullValueIn,
-			Sequence:    0xffffffff,
-		},
-	},
-	TxOut: []*types.TxOutput{
-		{
-			Amount:   0x0000000000000000,
-			PkScript: []byte{
-				0x76, 0xa9, 0x14, 0x64, 0xe2, 0x0e, 0xb6, 0x07, 0x55, 0x61, 0xd3, 0x0c,
-				0x23, 0xa5, 0x17, 0xc5, 0xb7, 0x3b, 0xad, 0xbc, 0x12, 0x0f, 0x05, 0x88,
-				0xac,
+var genesisCoinbaseTx = func() types.Transaction {
+	tx:=types.Transaction{
+		Version: 1,
+		TxIn: []*types.TxInput{
+			{
+				// Fully null.
+				PreviousOut: types.TxOutPoint{
+					Hash:  hash.Hash{},
+					OutIndex: 0xffffffff,
+				},
+				SignScript: []byte{
+					0x00, 0x00,
+				},
+				Sequence:    0xffffffff,
 			},
 		},
-	},
-	LockTime: 0,
-	Expire:   0,
-}
+		LockTime: 0,
+		Expire:   0,
+	}
+	Ledger(&tx)
+	return tx
+}()
 
 // genesisMerkleRoot is the hash of the first transaction in the genesis block
 // for the main network.
-var genesisMerkleRoot = genesisCoinbaseTx.TxHashFull()
+var genesisMerkleRoot = genesisCoinbaseTx.TxHash()
 
 // genesisBlock defines the genesis block of the block chain which serves as the
 // public transaction ledger for the main network.
@@ -93,7 +84,7 @@ var testNetGenesisCoinbaseTx = types.Transaction{}
 
 // testNetGenesisMerkleRoot is the hash of the first transaction in the genesis block
 // for the test network.
-var testNetGenesisMerkleRoot = testNetGenesisCoinbaseTx.TxHashFull()
+var testNetGenesisMerkleRoot = testNetGenesisCoinbaseTx.TxHash()
 
 // testNetGenesisBlock defines the genesis block of the block chain which
 // serves as the public transaction ledger for the test network (version 3).
@@ -120,7 +111,7 @@ var testPowNetGenesisCoinbaseTx = types.Transaction{}
 
 // testNetGenesisMerkleRoot is the hash of the first transaction in the genesis block
 // for the test network.
-var testPowNetGenesisMerkleRoot = testPowNetGenesisCoinbaseTx.TxHashFull()
+var testPowNetGenesisMerkleRoot = testPowNetGenesisCoinbaseTx.TxHash()
 
 // testNetGenesisBlock defines the genesis block of the block chain which
 // serves as the public transaction ledger for the test network (version 3).
@@ -187,7 +178,7 @@ var privNetGenesisCoinbaseTx = types.Transaction{
 // privNetGenesisMerkleRoot is the hash of the first transaction in the genesis
 // block for the simulation test network.  It is the same as the merkle root for
 // the main network.
-var privNetGenesisMerkleRoot = privNetGenesisCoinbaseTx.TxHashFull()
+var privNetGenesisMerkleRoot = privNetGenesisCoinbaseTx.TxHash()
 
 var zeroHash =  hash.ZeroHash
 

@@ -14,6 +14,8 @@ type InfoNodeResult struct {
 	Connections     int32   `json:"connections"`
 	PowDiff	  		PowDiff `json:"pow_diff"`
 	TestNet         bool    `json:"testnet"`
+	Confirmations   int32   `json:"confirmations"`
+	CoinbaseMaturity int32  `json:"coinbasematurity"`
 	Errors          string  `json:"errors"`
 	Modules         []string `json:"modules"`
 }

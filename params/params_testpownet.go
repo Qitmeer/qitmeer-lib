@@ -7,9 +7,9 @@
 package params
 
 import (
-	"github.com/HalalChain/qitmeer-lib/common"
-	"github.com/HalalChain/qitmeer-lib/core/protocol"
-	"github.com/HalalChain/qitmeer-lib/core/types/pow"
+	"github.com/Qitmeer/qitmeer-lib/common"
+	"github.com/Qitmeer/qitmeer-lib/core/protocol"
+	"github.com/Qitmeer/qitmeer-lib/core/types/pow"
 	"math/big"
 	"time"
 )

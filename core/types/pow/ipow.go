@@ -3,7 +3,7 @@ package pow
 import (
 	"encoding/binary"
 	"encoding/hex"
-	"github.com/HalalChain/qitmeer-lib/common/hash"
+	"github.com/Qitmeer/qitmeer-lib/common/hash"
 	"math/big"
 )
 

@@ -3,9 +3,9 @@ package pow
 import (
 	"errors"
 	"fmt"
-	"github.com/HalalChain/qitmeer-lib/common/hash"
-	"github.com/HalalChain/qitmeer-lib/crypto/cuckoo"
-	"github.com/HalalChain/qitmeer-lib/log"
+	"github.com/Qitmeer/qitmeer-lib/common/hash"
+	"github.com/Qitmeer/qitmeer-lib/crypto/cuckoo"
+	"github.com/Qitmeer/qitmeer-lib/log"
 	"math/big"
 )
 
