@@ -9,6 +9,8 @@ type InfoNodeResult struct {
 	Connections     int32   `json:"connections"`
 	Difficulty      float64 `json:"difficulty"`
 	TestNet         bool    `json:"testnet"`
+	Confirmations   int32   `json:"confirmations"`
+	CoinbaseMaturity int32  `json:"coinbasematurity"`
 	Errors          string  `json:"errors"`
 	Modules         []string `json:"modules"`
 }
@@ -39,7 +41,7 @@ type GetPeerInfoResult struct {
 // GetGraphStateResult data
 type GetGraphStateResult struct {
 	Tips []string `json:"tips"`
-	Total uint32 `json:"total"`
-	Layer uint32 `json:"layer"`
+	MainOrder uint32 `json:"mainorder"`
 	MainHeight uint32 `json:"mainheight"`
+	Layer uint32 `json:"layer"`
 }
