@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"time"
 	"github.com/Qitmeer/qitmeer-lib/core/message"
 	"strconv"
 	"github.com/Qitmeer/qitmeer-lib/core/json"
@@ -46,8 +47,8 @@ func MarshalJsonTransaction(tx *types.Transaction, params *params.Params, blkHas
 	}
 	txr:=json.TxRawResult{
 		Hex : hexStr,
-		Txid : tx.TxHash().String(),
-		//TxHash : tx.TxHash().String(),
+		TxHashFull : tx.TxHashFull().String(),
+		TxHash : tx.TxHash().String(),
 		Size:int32(tx.SerializeSize()),
 		Version:tx.Version,
 		LockTime:tx.LockTime,
@@ -187,7 +188,7 @@ func MarshalJsonBlock(b *types.SerializedBlock, inclTx bool, fullTx bool,
 		{Key:"bits", Val:strconv.FormatUint(uint64(head.Difficulty), 16)},
 		{Key:"difficulty", Val:head.Difficulty},
 		{Key:"nonce", Val:head.Nonce},
-		{Key:"timestamp", Val:head.Timestamp.Format("2006-01-02 15:04:05.0000")},
+		{Key:"timestamp", Val:head.Timestamp.Format(time.RFC3339)},
 		{Key:"parentroot",       Val:head.ParentRoot.String()},
 	}...)
 	tempArr:=[]string{}
