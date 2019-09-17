@@ -48,13 +48,13 @@ var TestPowNetParams = Params{
 	},
 
 	WorkDiffAlpha:            1,
-	WorkDiffWindowSize:       144,
+	WorkDiffWindowSize:       60,
 	WorkDiffWindows:          20,
 	MaximumBlockSizes:        []int{1310720},
 	MaxTxSize:                1000000,
-	TargetTimePerBlock:       time.Minute * 2,
-	TargetTimespan:           time.Minute * 2 * 144, // TimePerBlock * WindowSize
-	RetargetAdjustmentFactor: 4,
+	TargetTimePerBlock:       time.Minute * 1,
+	TargetTimespan:           time.Minute * 1 * 1, // TimePerBlock * WindowSize
+	RetargetAdjustmentFactor: 3,
 
 	// Subsidy parameters.
 	BaseSubsidy:              2500000000, // 25 Coin
