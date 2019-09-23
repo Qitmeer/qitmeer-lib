@@ -92,4 +92,5 @@ var TestPowNetParams = Params{
 	HDCoinType: 11,
 
 	CoinbaseMaturity:        16,
+	OrganizationPkScript:  hexMustDecode("76a914868b9b6bc7e4a9c804ad3d3d7a2a6be27476941e88ac"),
 }
