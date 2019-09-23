@@ -7,6 +7,7 @@ type PowDiff struct{
 }
 // InfoNodeResult models the data returned by the node server getnodeinfo command.
 type InfoNodeResult struct {
+	UUID            string  `json:"UUID"`
 	Version         int32   `json:"version"`
 	ProtocolVersion int32   `json:"protocolversion"`
 	GraphState      GetGraphStateResult `json:"graphstate"`
@@ -22,6 +23,7 @@ type InfoNodeResult struct {
 
 // GetPeerInfoResult models the data returned from the getpeerinfo command.
 type GetPeerInfoResult struct {
+	UUID           string  `json:"uuid"`
 	ID             int32   `json:"id"`
 	Addr           string  `json:"addr"`
 	AddrLocal      string  `json:"addrlocal,omitempty"`
