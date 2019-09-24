@@ -13,7 +13,7 @@ type InfoNodeResult struct {
 	GraphState      GetGraphStateResult `json:"graphstate"`
 	TimeOffset      int64   `json:"timeoffset"`
 	Connections     int32   `json:"connections"`
-	PowDiff	  		PowDiff `json:"pow_diff"`
+	PowDiff         PowDiff `json:"pow_diff"`
 	TestNet         bool    `json:"testnet"`
 	Confirmations   int32   `json:"confirmations"`
 	CoinbaseMaturity int32  `json:"coinbasematurity"`

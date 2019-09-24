@@ -27,6 +27,12 @@ var PowMapString = map[PowType]interface{}{
 	CUCKATOO : "cuckatoo",
 }
 
+type PowResult struct {
+    Nonce     uint64     `json:"nonce"`
+    PowType   string     `json:"pow_type"`
+    ProofData string     `json:"proof_data"`
+}
+
 type ProofDataType [PROOFDATA_LENGTH]byte
 
 func (this *ProofDataType) String() string{
@@ -79,6 +85,7 @@ type IPow interface {
 	//if cur_reduce_diff <=0 return powLimit or min diff
 	GetSafeDiff(param *PowConfig,cur_reduce_diff uint64) uint64
 	PowPercent(param *PowConfig) *big.Int
+	GetPowResult() PowResult
 }
 
 
@@ -102,6 +109,15 @@ func (this *Pow)Bytes() PowBytes {
 	//write ProofData 176 bytes
 	copy(r[12:],this.ProofData[:])
 	return PowBytes(r)
+}
+
+
+func (this *Pow)GetPowResult() PowResult {
+	return PowResult{
+		this.GetNonce(),
+		PowMapString[this.GetPowType()].(string),
+		this.GetProofData(),
+	}
 }
 
 //get pow instance

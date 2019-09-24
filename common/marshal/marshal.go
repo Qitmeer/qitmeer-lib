@@ -10,11 +10,11 @@ import (
 	"github.com/Qitmeer/qitmeer-lib/core/message"
 	"github.com/Qitmeer/qitmeer-lib/core/protocol"
 	"github.com/Qitmeer/qitmeer-lib/core/types"
-	"github.com/Qitmeer/qitmeer-lib/core/types/pow"
 	"github.com/Qitmeer/qitmeer-lib/engine/txscript"
 	"github.com/Qitmeer/qitmeer-lib/params"
 	"github.com/Qitmeer/qitmeer-lib/rpc"
 	"strconv"
+	"time"
 )
 
 // messageToHex serializes a message to the wire protocol encoding using the
@@ -187,12 +187,8 @@ func MarshalJsonBlock(b *types.SerializedBlock, inclTx bool, fullTx bool,
 		{Key:"stateRoot", Val:head.StateRoot.String()},
 		{Key:"bits", Val:strconv.FormatUint(uint64(head.Difficulty), 16)},
 		{Key:"difficulty", Val:head.Difficulty},
-		{Key:"pow", Val : map[string]interface{}{
-			"nonce":head.Pow.GetNonce(),
-			"pow_type":pow.PowMapString[head.Pow.GetPowType()],
-			"proof_data":head.Pow.GetProofData(),
-		},},
-		{Key:"timestamp", Val:head.Timestamp.Format("2006-01-02 15:04:05.0000")},
+		{Key:"pow", Val : head.Pow.GetPowResult()},
+		{Key:"timestamp", Val:head.Timestamp.Format(time.RFC3339)},
 		{Key:"parentroot",       Val:head.ParentRoot.String()},
 	}...)
 	tempArr:=[]string{}
